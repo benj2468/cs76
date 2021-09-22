@@ -1,3 +1,7 @@
+# Benjamin Cape
+# CS76 - AI - 21F
+# 9.21.21
+
 import unittest
 from FoxProblem import FoxProblem, Action, Location
 

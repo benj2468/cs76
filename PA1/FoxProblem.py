@@ -1,3 +1,7 @@
+# Benjamin Cape
+# CS76 - AI - 21F
+# 9.21.21
+
 from __future__ import annotations
 from enum import Enum
 from typing import List
@@ -8,6 +12,10 @@ from itertools import product
 class Location(Enum):
     LEFT = 1
     RIGHT = -1
+
+
+MIN_BOAT_CAPACITY = 1
+MAX_BOAT_CAPACITY = 2
 
 
 class Action():
@@ -28,21 +36,27 @@ class FoxProblem():
         self.start_state = self
 
     def goal_test(self) -> bool:
+        '''Test whether or not the current state is a goal state'''
         return self.chickens == self.foxes == 0 and self.boat == Location.RIGHT
 
     def get_actions(self) -> List[Action]:
+        '''Get all the legal actions from the current state'''
         legal_actions = []
         (max_c, max_f) = (self.start_state.chickens, self.start_state.foxes)
         max_chickens = self.chickens if self.boat == Location.LEFT else max_c - self.chickens
         max_foxes = self.foxes if self.boat == Location.LEFT else max_f - self.foxes
-        for (i, j) in product(range(0, min(3, max_chickens + 1)),
-                              range(0, min(3, max_foxes + 1))):
-            if (i + j > 2) or (i + j < 1):
+        for (i,
+             j) in product(range(0,
+                                 min(MAX_BOAT_CAPACITY, max_chickens) + 1),
+                           range(0,
+                                 min(MAX_BOAT_CAPACITY, max_foxes) + 1)):
+            # Only accept actions that are LEGAL action
+            if (i + j > MAX_BOAT_CAPACITY) or (i + j < MIN_BOAT_CAPACITY):
                 continue
 
             action = Action(i, j, Location(-self.boat.value))
 
-            # Creates a legal next-states
+            # Only add legal states to our return value
             next = self.transition(action)
             if ((next.chickens >= next.foxes) or next.chickens == 0) and \
             ((max_c - next.chickens) >= (max_f - next.foxes) or next.chickens == max_c):
@@ -51,16 +65,20 @@ class FoxProblem():
         return legal_actions
 
     def get_successors(self) -> List[FoxProblem]:
+        '''Get all successor states from the given state'''
         states = []
         for action in self.get_actions():
             states.append(self.transition(action))
         return states
 
     def transition(self, action: Action) -> FoxProblem:
+        '''Compute the next state from the current state given an action'''
         next = deepcopy(self)
+
         next.chickens += action.dest.value * action.chickens
         next.foxes += action.dest.value * action.foxes
         next.boat = action.dest
+
         next.start_state = deepcopy(self.start_state)
 
         return next

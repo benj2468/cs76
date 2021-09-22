@@ -1,6 +1,10 @@
+# Benjamin Cape
+# CS76 - AI - 21F
+# 9.21.21
+
 from collections import deque
 from SearchSolution import SearchSolution
-from copy import copy, deepcopy
+from copy import copy
 
 
 # you might find a SearchNode class useful to wrap state objects,
@@ -19,6 +23,7 @@ class SearchNode:
 
 
 def backtracking(solution, search_node: SearchNode) -> SearchSolution:
+    '''Bubble up from a search_node until parent is None (i.e. start node) and add all to the path of the solution'''
     while search_node.parent:
         solution.path.append(search_node.state)
         search_node = search_node.parent
@@ -38,17 +43,24 @@ def bfs_search(search_problem, node=None) -> SearchSolution:
     visited = set()
 
     while len(to_visit) > 0:
-        current = to_visit.pop()
+        # Pop left removes things that were added before, since append adds to the right
+        current = to_visit.popleft()
+        visited.add(current.state)
         solution.nodes_visited += 1
+
+        # Visit all successors
         for next in current.state.get_successors():
             next = SearchNode(next, current)
+            solution.nodes_visited += 1
+
             if next.state.goal_test():
-                solution.nodes_visited += 1
+
                 return backtracking(solution, next)
             elif not next.state in visited:
+                # Only add the next state if we haven't already seen it.
                 to_visit.append(next)
+
             visited.add(next.state)
-        visited.add(current.state)
 
     return solution
 
@@ -91,12 +103,12 @@ def dfs_search(search_problem,
         if next in solution.path:
             continue
         # If it is not None, then we have a solution, and we bubble-up this path without checking the others
-        sub_solution = dfs_search(search_problem, depth_limit - 1,
-                                  SearchNode(next), deepcopy(solution))
-        if len(sub_solution.path) > 0:
-            return sub_solution
+        path = copy(solution.path)
+        dfs_search(search_problem, depth_limit - 1, SearchNode(next), solution)
+        if len(solution.path) > 0:
+            return solution
         else:
-            solution.nodes_visited = sub_solution.nodes_visited
+            solution.path = path
     # If none of the neighbors found viable paths, then we neglect all we've done and go back
     solution.path = []
     return solution
@@ -104,11 +116,11 @@ def dfs_search(search_problem,
 
 def ids_search(search_problem, depth_limit=100) -> SearchSolution:
     solution = SearchSolution(search_problem, "IDS")
+    # Look over all our depths
     for i in range(0, depth_limit):
-        sol = dfs_search(search_problem, i, None, deepcopy(solution))
-        if len(sol.path) > 0:
-            return sol
-        else:
-            solution.nodes_visited = sol.nodes_visited
+        dfs_search(search_problem, i, None, solution)
+        # If we find a valid solution, terminate by returning
+        if len(solution.path) > 0:
+            return solution
 
     return solution

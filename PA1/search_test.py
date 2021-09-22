@@ -1,5 +1,9 @@
+# Benjamin Cape
+# CS76 - AI - 21F
+# 9.21.21
+
 import unittest
-from PA1.FoxProblem import Location
+from FoxProblem import Location
 from uninformed_search import bfs_search, dfs_search
 from FoxProblem import FoxProblem
 
@@ -9,7 +13,7 @@ class SearchTest(unittest.TestCase):
 
     def test_bfs(self):
         solution = bfs_search(self.init_state)
-        self.assertEqual(solution.nodes_visited, 12)
+        self.assertEqual(solution.nodes_visited, 14)
         self.assertEqual(len(solution.path), 12)
 
     def test_dfs(self):
