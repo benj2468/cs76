@@ -8,6 +8,20 @@ For DFS we make some small alterations to the standard DFS. First, we use path-p
 
 IDS search is incredibly simple, iterating over the range and calling DFS with the depth limit $i$. If we succeed, then we terminate, if non of the iterative calls succeed then we return our empty solution with all the visited nodes from the each call (since we do visit nodes multiple times)
 
+Runtime/Nodes Visited Statistics:
+
+|     | DFS     | BFS     | IDS         |
+| --- | ------- | ------- | ----------- |
+| 3,3 | 2135/13 | 2145/13 | 18780/162   |
+| 5,4 | 2971/21 | 4082/28 | 113700/1083 |
+| 5,5 | 1412/13 | 2659/24 | 245784/2299 |
+
+To view these statistics, run `make stats`
+
+We know the runtimes of DFS (path-checking) and BFS are not that different if the branching factor is small, which for our space it is, considering there are only 18 states (at least for the first one, and not all of them are even legal).
+
+For IDS, it makes sense that it is taking so long becuase we know that the solution is at depth 12 for the first, and 18 for the second, thus perform the same checks MANY times.
+
 ## Evaluation
 
 Yes, my implemented algorithms work. And I like to believe that they work particularly well. In my BFS I've added a bit of space to make the runtime faster. In DFS, since our path is a list, searching that list to see if we've already visited a node takes some time, making that an inefficiency of the algorithm. Otherwise, my solutions are strong. the BFS and the IDS always find paths of the same length, which is expected because they are optimal, and my DFS gets a sub-optimal solution though not much less strong.

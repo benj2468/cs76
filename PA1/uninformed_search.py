@@ -41,20 +41,18 @@ def bfs_search(search_problem, node=None) -> SearchSolution:
     # This does not add space, because we already store them all within the SearchNode
     # This simply stores the same data in a different place for faster querying, making storage O(2*n) = O(n)
     visited = set()
+    visited.add(node.state)
 
     while len(to_visit) > 0:
         # Pop left removes things that were added before, since append adds to the right
         current = to_visit.popleft()
-        visited.add(current.state)
         solution.nodes_visited += 1
 
         # Visit all successors
         for next in current.state.get_successors():
             next = SearchNode(next, current)
-            solution.nodes_visited += 1
 
             if next.state.goal_test():
-
                 return backtracking(solution, next)
             elif not next.state in visited:
                 # Only add the next state if we haven't already seen it.
