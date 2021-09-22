@@ -41,3 +41,5 @@ Using Memoizing DFS with IDS is essentially the same as BFS, since in iteration 
 See [FoxProblem_test](./FoxProblem_test.py) to see tests on my Fox game state/action implementation.
 
 See [search_test](./search_test.py) for tests on the search problems.
+
+To run the test run `make test` for this directory

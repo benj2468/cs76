@@ -33,6 +33,7 @@ class FoxProblemTest(unittest.TestCase):
 
     def test_valid_states(self):
         current_state = FoxProblem(3, 2, Location.RIGHT)
+        current_state.start_state = FoxProblem(3, 3, Location.LEFT)
         valid_states = [
             FoxProblem(3, 3, Location.LEFT),
         ]
