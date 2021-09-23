@@ -1,11 +1,14 @@
 from FoxProblem import FoxProblem, Location
+from LossyFoxProblem import FoxProblem as LossyFox
 from uninformed_search import bfs_search, dfs_search, ids_search
 from datetime import datetime
 
 # Create a few test problems:
-problem331 = FoxProblem(3, 3, Location(1))
-problem541 = FoxProblem(5, 4, Location(1))
-problem551 = FoxProblem(5, 5, Location(1))
+problem331 = FoxProblem(3, 3, Location.LEFT)
+problem541 = FoxProblem(5, 4, Location.LEFT)
+problem551 = FoxProblem(5, 5, Location.LEFT)
+
+problem331Lossy = LossyFox(3, 3, Location.LEFT, 2)
 
 # Run the searches.
 #  Each of the search algorithms should return a SearchSolution object,
@@ -21,14 +24,18 @@ def stat(method, problem):
     print(f"Time Taken: {duration.microseconds} ms")
 
 
-stat(dfs_search, problem331)
-stat(bfs_search, problem331)
-stat(ids_search, problem331)
+# stat(dfs_search, problem331)
+# stat(bfs_search, problem331)
+# stat(ids_search, problem331)
 
-stat(dfs_search, problem541)
-stat(bfs_search, problem541)
-stat(ids_search, problem541)
+# stat(dfs_search, problem541)
+# stat(bfs_search, problem541)
+# stat(ids_search, problem541)
 
-stat(dfs_search, problem551)
-stat(bfs_search, problem551)
-stat(ids_search, problem551)
+# stat(dfs_search, problem551)
+# stat(bfs_search, problem551)
+# stat(ids_search, problem551)
+
+stat(dfs_search, problem331Lossy)
+stat(bfs_search, problem331Lossy)
+stat(ids_search, problem331Lossy)

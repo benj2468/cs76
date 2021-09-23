@@ -50,6 +50,23 @@ It makes more sense to use memoizing DFS, or BFS with depth-limiting. Why? Well 
 
 Using Memoizing DFS with IDS is essentially the same as BFS, since in iteration 0 we check everything at distance 0 from the start (just the start), then in iteration 1 we check all at distance 1. Then at iteration 2 we check all at distance 2 etc. This is the same as BFS, so it's much simpler to use BFS. And this makes sense. You use IDS when you suspect that your goal is close to the root, so as to net get bogged down by DFS's deep-depth-first component. This is the same reason to use BFS.
 
+5. Lossy chickens and foxes: Every fox knows the saying that you can't make an omelet without breaking a few eggs. What if, in the service of their faith, some chickens were willing to be made into lunch? Let us design a problem where no more than E chickens could be eaten, where E is some constant.
+
+- What would the state for this problem be?
+  ```
+  {
+      chickens: int,
+      foxes: int,
+      boat: Location,
+      chickens_eaten: int
+  }
+  ```
+- What changes would you have to make to your code to implement a solution?
+
+In order to implement this change we would need to the `get_successors` function to change what we interpret as a valid state. By requiring that `chickens_eaten < E`, we accomplish. One other small thing would be changing how we do the `transition` to enable the eating a chicken. We also would need to change our `test_goal` to check not if
+
+- Give an upper bound on the number of possible states for this problem. - $O(CFE)$ Where $C$ is the number of chickens we start with, $F$ is the number of Foxes we start with and $E$ is lossy constant.
+
 ## Tests
 
 See [FoxProblem_test](./FoxProblem_test.py) to see tests on my Fox game state/action implementation.
