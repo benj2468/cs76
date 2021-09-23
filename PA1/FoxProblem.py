@@ -90,4 +90,4 @@ class FoxProblem():
         return f"State: c:{self.chickens}, f:{self.foxes}, loc:{self.boat}"
 
     def __hash__(self) -> int:
-        return ((self.chickens * 3) + self.foxes) * self.boat.value
+        return (self.chickens, self.foxes, self.boat).__hash__()

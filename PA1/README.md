@@ -58,12 +58,12 @@ Using Memoizing DFS with IDS is essentially the same as BFS, since in iteration 
       chickens: int,
       foxes: int,
       boat: Location,
-      chickens_eaten: int
+      lossy: int
   }
   ```
 - What changes would you have to make to your code to implement a solution?
 
-In order to implement this change we would need to the `get_successors` function to change what we interpret as a valid state. By requiring that `chickens_eaten < E`, we accomplish. One other small thing would be changing how we do the `transition` to enable the eating a chicken. We also would need to change our `test_goal` to check not if
+In order to implement this change we would need to the `get_successors` function to change what we interpret as a valid state. By requiring that `start_state.lossy - lossy >= 0`, we accomplish. One other small thing would be changing how we do the `transition` to enable the eating a chicken. We also need to
 
 - Give an upper bound on the number of possible states for this problem. - $O(CFE)$ Where $C$ is the number of chickens we start with, $F$ is the number of Foxes we start with and $E$ is lossy constant.
 

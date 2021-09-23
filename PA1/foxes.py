@@ -8,7 +8,7 @@ problem331 = FoxProblem(3, 3, Location.LEFT)
 problem541 = FoxProblem(5, 4, Location.LEFT)
 problem551 = FoxProblem(5, 5, Location.LEFT)
 
-problem331Lossy = LossyFox(3, 3, Location.LEFT, 2)
+problem331Lossy = LossyFox(5, 4, Location.LEFT, 3)
 
 # Run the searches.
 #  Each of the search algorithms should return a SearchSolution object,
@@ -24,17 +24,17 @@ def stat(method, problem):
     print(f"Time Taken: {duration.microseconds} ms")
 
 
-# stat(dfs_search, problem331)
-# stat(bfs_search, problem331)
-# stat(ids_search, problem331)
+stat(dfs_search, problem331)
+stat(bfs_search, problem331)
+stat(ids_search, problem331)
 
-# stat(dfs_search, problem541)
-# stat(bfs_search, problem541)
-# stat(ids_search, problem541)
+stat(dfs_search, problem541)
+stat(bfs_search, problem541)
+stat(ids_search, problem541)
 
-# stat(dfs_search, problem551)
-# stat(bfs_search, problem551)
-# stat(ids_search, problem551)
+stat(dfs_search, problem551)
+stat(bfs_search, problem551)
+stat(ids_search, problem551)
 
 stat(dfs_search, problem331Lossy)
 stat(bfs_search, problem331Lossy)

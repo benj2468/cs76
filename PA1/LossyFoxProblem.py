@@ -64,12 +64,6 @@ class FoxProblem():
             next = self.transition(action)
             if next.lossy >= 0:
                 legal_actions.append(action)
-            # if ((next.chickens >= next.foxes) or next.chickens == 0) and \
-            # ((max_c - next.chickens) >= (max_f - next.foxes) or next.chickens == max_c):
-            #     legal_actions.append(action)
-            # elif ((next.chickens < next.foxes) or (max_c - next.chickens) <
-            #       (max_f - next.foxes)):
-            #     legal_actions.append(action)
 
         return legal_actions
 
@@ -105,7 +99,7 @@ class FoxProblem():
         return self.boat == o.boat and self.chickens == o.chickens and self.foxes == o.foxes
 
     def __repr__(self) -> str:
-        return f"State: c:{self.chickens}, f:{self.foxes}, loc:{self.boat}, eaten:{self.lost()}"
+        return f"State: c:{self.chickens}, f:{self.foxes}, loc:{self.boat}, eaten:{self.get_lost()}"
 
     def __hash__(self) -> int:
         # Need to add in here the lossy value somehow
