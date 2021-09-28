@@ -1,6 +1,6 @@
 from __future__ import annotations
 from time import sleep
-from typing import List, Tuple
+from typing import List, Set, Tuple
 from random import randrange, sample
 from itertools import product
 
@@ -155,6 +155,26 @@ class Maze:
 
         return s
 
+    def with_potential_robots(self, potential_robots: Set[Tuple[int,
+                                                                int]]) -> str:
+        # render robot locations into the map
+        renderlist = self.create_render_list()
+
+        # use the renderlist to construct a string, by
+        #  adding newlines appropriately
+
+        s = ""
+        for y in range(self.height - 1, -1, -1):
+            for x in range(self.width):
+                if (x, y) in potential_robots:
+                    s += "X"
+                else:
+                    s += renderlist[self.index(x, y)]
+
+            s += "\n"
+
+        return s
+
     # This Works
     def rand(self, max_width: int, max_height: int) -> Maze:
         width = randrange(5, max_width)
@@ -209,8 +229,8 @@ if __name__ == "__main__":
     test_maze1 = Maze("./maze1.maz")
     print(test_maze1)
 
-    #test_maze2 = Maze("maze2.maz")
-    #print(test_maze2)
+    test_maze2 = Maze("maze2.maz")
+    print(test_maze2)
 
     test_maze3 = Maze("maze3.maz")
     print(test_maze3)

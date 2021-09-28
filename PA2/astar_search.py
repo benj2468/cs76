@@ -79,15 +79,15 @@ def astar_search(search_problem, heuristic_fn, sync=False):
     visited_cost = {}
 
     def add_visited(node: AstarNode, cost: int):
-        visited_cost[node.state.__str__()] = cost
+        visited_cost[node.state.hashed()] = cost
 
     def check_visited(node: AstarNode, cost: int):
-        neighbor = node.state.__str__()
+        neighbor = node.state.hashed()
         return (not neighbor in visited_cost) or (
             neighbor in visited_cost and visited_cost[neighbor] > cost)
 
     def get_visited(node: AstarNode):
-        return visited_cost[node.state.__str__()]
+        return visited_cost[node.state.hashed()]
 
     add_visited(start_node, 0)
 

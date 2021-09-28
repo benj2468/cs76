@@ -4,7 +4,7 @@ from Maze import Maze, robotchar
 from time import sleep
 from enum import Enum
 from itertools import zip_longest
-from typing import Generator, List, Set, Tuple
+from typing import Generator, List, Tuple
 
 
 class Move(Enum):
@@ -86,8 +86,9 @@ class MazeworldProblem:
     def __str__(self):
         return f"Mazeworld problem: \nTurn: {robotchar(self.robot)}\n{self.maze.with_goals(self.goal_locations)}"
 
-    def __hash__(self) -> int:
-        return f"{self}".__hash__()
+    def hashed(self) -> int:
+        return f"Mazeworld problem: \nTurn: {robotchar(self.robot)}\n{self.maze}".__hash__(
+        )
 
     # given a sequence of states (including robot turn), modify the maze and print it out.
     #  (Be careful, this does modify the maze!)

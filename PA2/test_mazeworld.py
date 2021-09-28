@@ -26,11 +26,12 @@ def test_maze(prob: MazeworldProblem, check_bfs=False):
 
 
 test_maze3 = Maze("maze3.maz")
-test_mp = MazeworldProblem(test_maze3, ((1, 4), (1, 3), (1, 2)))
+test_mp = MazeworldProblem(test_maze3, [(1, 4), (1, 3), (1, 2)])
+print(test_mp)
 a_res = astar_search(test_mp, test_mp.manhattan_heuristic, sync=True)
-# print(a_res)
+print(a_res)
 
-test_maze(test_mp)
+# test_maze(test_mp)
 
 # for i in range(5):
 #     rand = Maze(None, 40, 40)
