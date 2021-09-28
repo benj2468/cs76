@@ -9,6 +9,6 @@ def null_heuristic(state):
 
 
 test_maze3 = Maze("maze4.maz")
-sensorless = SensorlessProblem(test_maze3, [(1, 4)])
-sensorless_res = astar_search(sensorless, null_heuristic, sync=True)
-sensorless.animate_path(sensorless_res.path)
+sensorless = SensorlessProblem(test_maze3, (1, 4))
+man_res = astar_search(sensorless, sensorless.manhattan_heuristic, sync=True)
+print(man_res)

@@ -1,5 +1,17 @@
 # CS76 21F - PA-2 Mazeworld [Benjamin Cape]
 
+## Description
+
+How do your implemented algorithms work? What design decisions did you make? How you laid out the problems?
+
+> TODO
+
+## Evaluation
+
+Do your implemented algorithms actually work? How well? If it doesn’t work, can you tell why not? What partial successes did you have that deserve partial credit?
+
+> TODO
+
 ## Discussion Questions:
 
 1. If there are k robots, how would you represent the state of the system? Hint -- how many numbers are needed to exactly reconstruct the locations of all the robots, if we somehow forgot where all of the robots were? Further hint. Do you need to know anything else to determine exactly what actions are available from this state?
@@ -55,12 +67,16 @@ The 8-puzzle problem is simple the maze problem when $k = n-1$ The heuristic I c
 
 7. The state space of the 8-puzzle is made of two disjoint sets. Describe how you would modify your program to prove this. (You do not have to implement this.)
 
-> TODO
+The state for our game can be described as two disjoint sets, being the set of robot locations, and the set of wall locations. That is enough information for us to accomplish our goal. We do not need to know where anything else is, or keep track of an entire map that is $nm$ in size. We only need to keep track of the squares that are filled, and keep track of the size of the space (width/height). This allows us to efficiently determine if a certain coordinate is occupied by a wall or a robot, otherwise it is clear and we can move there.
 
-## Implement and Test
+## Blind Robot Problem
 
-- Implementation is done.
+1. Describe what heuristic you used for the A\* search. Is the heuristic optimistic? Are there other heuristics you might use? (An excellent might compare a few different heuristics for effectiveness and make an argument about optimality.)
 
-- Random Graphs done
+I am using a heuristic that calculates the sum of the manhattan distances from all possible states that we current suspect. Consider that my solution only checks 10 nodes for a 5x6 grid, whose solution is a path of 10 nodes I imagine it is incredible fast and efficient.
 
-- Need to write tests
+Using a similar heuristic, but instead of the sum using the maximum still is optimal, but expands more nodes 313 to be exact. This makes sense, given the hint in the assignment. We could in fact increase our maximum distance, but decrease the sum of the distances because we made more closer, or got rid of one along the way.
+
+## Testing
+
+Tests for everything need to be written and run

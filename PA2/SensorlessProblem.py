@@ -22,9 +22,9 @@ class SensorlessProblem:
 
     ## You write the good stuff here:
 
-    def __init__(self, maze: Maze, goal_locations: List[Tuple[int, int]]):
+    def __init__(self, maze: Maze, goal: Tuple[int, int]):
         self.maze = maze
-        self.goal_locations = goal_locations
+        self.goal = goal
 
         self.options = set()
         for loc in product(range(self.maze.width), range(self.maze.height)):
@@ -33,6 +33,15 @@ class SensorlessProblem:
 
         self.start_state = self
         self.previous_mode = None
+
+        def manhattan_heuristic(state: SensorlessProblem) -> int:
+            s = 0
+            gx, gy = state.goal
+            for x, y in state.options:
+                s += abs(gx - x) + abs(gy - y)
+            return s
+
+        self.manhattan_heuristic = manhattan_heuristic
 
     def goal_test(self):
         return len(self.options) == 1
