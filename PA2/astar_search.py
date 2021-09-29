@@ -51,7 +51,7 @@ def backchain(node):
     return result
 
 
-def astar_search(search_problem, heuristic_fn, sync=False):
+def astar_search(search_problem, heuristic_fn):
     start_node = AstarNode(search_problem.start_state,
                            heuristic_fn(search_problem.start_state))
     frontier = PriorityQueue()

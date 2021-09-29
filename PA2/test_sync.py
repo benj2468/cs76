@@ -1,4 +1,4 @@
-from MazeworldProblemSync import MazeworldProblem
+from BONUS_MazeworldProblemSync import MazeworldProblem
 from Maze import Maze
 
 # from uninformed_search import bfs_search
@@ -15,7 +15,7 @@ def null_heuristic(state):
 
 def test_maze(prob: MazeworldProblem, check_bfs=False):
     print(prob)
-    a_res = astar_search(prob, prob.manhattan_heuristic, sync=True)
+    a_res = astar_search(prob, prob.manhattan_heuristic)
     print(a_res)
     if check_bfs:
         bfs_res = bfs_search(prob)
@@ -27,12 +27,10 @@ def test_maze(prob: MazeworldProblem, check_bfs=False):
 
 test_maze3 = Maze("maze3.maz")
 test_3_1 = MazeworldProblem(test_maze3, [(1, 4), (1, 3), (1, 2)])
+test_maze(test_3_1)
 
-res = astar_search(test_3_1, test_3_1.manhattan_heuristic)
-test_3_1.animate_path(res.path)
-
-# for i in range(5):
-#     rand = Maze(None, 40, 40)
-#     goals = rand.rand_goals()
-#     prob = MazeworldProblem(rand, goals)
-#     test_maze(prob)
+for i in range(5):
+    rand = Maze(None, 40, 40)
+    goals = rand.rand_goals()
+    prob = MazeworldProblem(rand, goals)
+    test_maze(prob)

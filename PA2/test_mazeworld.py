@@ -15,7 +15,7 @@ def null_heuristic(state):
 
 def test_maze(prob: MazeworldProblem, check_bfs=False):
     print(prob)
-    a_res = astar_search(prob, prob.manhattan_heuristic, sync=True)
+    a_res = astar_search(prob, prob.manhattan_heuristic)
     print(a_res)
     if check_bfs:
         bfs_res = bfs_search(prob)

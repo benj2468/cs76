@@ -52,17 +52,22 @@ This implementation is even simpler than the previous. It is intriguing to note 
 
 Do your implemented algorithms actually work? How well? If it doesn’t work, can you tell why not? What partial successes did you have that deserve partial credit?
 
-My algorithms work properly. When compared to BFS, which we know is correct and optimal I get the same answer. In fact, I think my algorithms work relatively well. I know it works because it visits fewer nodes than does BFS, or an A\* search with the null heuristic.
+My algorithms work properly. When compared to BFS, which we know is correct and optimal I get the same answer. In fact, I think my algorithms work relatively well. I know it works because it visits fewer nodes than does BFS, or an A\* search with the null heuristic (which I know are the same thing).
 
-> TODO
+One algorithm I wrote that doesn't work so well is the randomized one, since sometimes there is no solution if a blind maze has an enclosed space, and if that is the case we have to explore EVERY node, which takes too long for my computer to handle.
 
 ## Discussion Questions:
 
 1. If there are k robots, how would you represent the state of the system? Hint -- how many numbers are needed to exactly reconstruct the locations of all the robots, if we somehow forgot where all of the robots were? Further hint. Do you need to know anything else to determine exactly what actions are available from this state?
 
-Well, first we will need to know which robot's turn it is to move. This will take one value in the state. We can store each robots location in one value, but that is simply storing 2 log(n)-bit values in a log(n^2)-bit value.
+Well, first we will need to know which robot's turn it is to move. This will take one value in the state. We can store each robots location in one value, but that is simply storing 2 log(n)-bit values in a log(n^2)-bit value. I've then represented the state of the system as such:
 
-> Not sure how we could recover a robots location with we don't store all of them.
+```
+{
+    robot: int,
+    robot_locs: List[Tuple[int, int]]
+}
+```
 
 2. Give an upper bound on the number of states in the system, in terms of n and k.
 
@@ -77,8 +82,6 @@ If we don't consider the walls here, we get:
 $$O(k*n^2)$$
 
 3. Give a rough estimate on how many of these states represent collisions if the number of wall squares is w, and n is much larger than k.
-
-If we consider $w$ walls, then $O(w * k)$ of those are collisions with the walls.
 
 > Not sure what you mean by n much larger than k
 
@@ -213,4 +216,8 @@ Notice how with this solution we have areas where we kind-of get stuck, so we ne
 
 ## Extra Credit
 
-I have implemented the synchronous movement as seen in [`MazeworldProblemSync`](MazeworldProblemSync.py).
+I have implemented the synchronous movement as seen in [`BONUS_MazeworldProblemSync`](BONUS_MazeworldProblemSync.py). Not much to tell here. We use a simple recursive DFS to find all the possible actions that we can get from a certain state.
+
+## Testing and Running
+
+Run `make tests` to run all the tests on the random graphs and on the standard `maze3` provided. Sometimes the random graph is not solvable, if this is the case for the blind robot problem, then you'll need to re-run it because checking every state will take WAY to long.
