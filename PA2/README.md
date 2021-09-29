@@ -48,6 +48,8 @@ I've added a new printing function for a maze to show the goal states as well. I
 
 This implementation is even simpler than the previous. It is intriguing to note though, that without a heuristic this solution locates the robot, but it does not do so at the defined goal. Since the only place we use the goal state is in the heuristic.
 
+My heuristic for this problem is the sum of the manhattan distances for all the suspected locations.
+
 ## Evaluation
 
 Do your implemented algorithms actually work? How well? If it doesn’t work, can you tell why not? What partial successes did you have that deserve partial credit?
@@ -71,19 +73,23 @@ Well, first we will need to know which robot's turn it is to move. This will tak
 
 2. Give an upper bound on the number of states in the system, in terms of n and k.
 
-Lets add another value, say we have $n$x$n$ maze, with $k$ robots, and with $r$ barriers. Therefore, we have $n^2 - r$ valid squares for a robot to be on.
+Assume we have an $n$x$n$ board, with $k$ robots, that means we have $n^2$ buckets to place $k$ elements into. This is a simple
 
-$O((n^2-r)*(k+1)) = O(k * (n^2-r))$
+$$\binom{n^2}{k}$$
 
-This is because each valid square can have $k+1$ different things on it, either one of the $k$ robots, or an empty state
+Essentially, counting the number of subsets of size $k$ in a set of $2^k$ elements. That determines the $k$ squares, then, within the $k$ squares we can arrange the $k$ robots in $k!$ different ways, since each one is distinct.
 
-If we don't consider the walls here, we get:
+Therefore our total upper bound it:
 
-$$O(k*n^2)$$
+$$O(k!\binom{n^2}{k})$$
 
 3. Give a rough estimate on how many of these states represent collisions if the number of wall squares is w, and n is much larger than k.
 
-> Not sure what you mean by n much larger than k
+BUT, we didn't consider the $w$ walls. So lets count how many different scenarios there are where at least one robot is on a wall. We know that we will sum over all the number of robots that can be on a wall, so we will have a summation from $[1,k]$. Then, for each $k$ we have a similar counting as above.
+
+$$\sum_{i \in [1,k]}i!\binom{w}{i}\binom{n^2-w}{k-i}$$
+
+We tack on the other binomial coefficient because we also need to count the possible ways that we can permute the remaining robots on the rest of the board, hence $n^2-w$ because that is the number of floor locations.
 
 4. If there are not many walls, n is large (say 100x100), and several robots (say 10), do you expect a straightforward breadth-first search on the state space to be computationally feasible for all start and goal pairs? Why or why not?
 
