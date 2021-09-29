@@ -1,4 +1,5 @@
 from __future__ import annotations
+from math import log2
 from time import sleep
 from typing import List, Set, Tuple
 from random import randrange, sample
@@ -31,14 +32,12 @@ from itertools import product
 class Maze:
 
     # internal structure:
-    #   self.walls: set of tuples with wall locations
     #   self.width: number of columns
     #   self.rows
 
     def __init__(self, mazefilename=None, *args, **kwargs):
 
         self.robotloc: List[Tuple[int, int]] = []
-        self.walls = set()
 
         if not mazefilename:
             self.rand(*args, **kwargs)
@@ -66,11 +65,6 @@ class Maze:
         self.width = len(lines[0])
         self.height = len(lines)
 
-        for (i, line) in enumerate(reversed(lines)):
-            for (j, square) in enumerate(line):
-                if square == "#":
-                    self.walls.add((j, i))
-
         self.map = list("".join(lines))
 
     def index(self, x, y):
@@ -87,11 +81,6 @@ class Maze:
             return False
 
         return self.map[self.index(x, y)] == "."
-
-    # Need test
-    def is_occupied(self, x, y) -> bool:
-        loc = (x, y)
-        return loc in self.walls or loc in self.robotloc
 
     def has_robot(self, x, y):
         if x < 0 or x >= self.width:
@@ -146,7 +135,7 @@ class Maze:
         s = ""
         for y in range(self.height - 1, -1, -1):
             for x in range(self.width):
-                if (x, y) in goals:
+                if (x, y) in goals and (not (x, y) in self.robotloc):
                     s += str(goals.index((x, y)))
                 else:
                     s += renderlist[self.index(x, y)]
@@ -176,25 +165,32 @@ class Maze:
         return s
 
     # This Works
-    def rand(self, max_width: int, max_height: int) -> Maze:
+    def rand(self, max_width: int, max_height: int, robots=None) -> Maze:
         width = randrange(5, max_width)
         height = randrange(5, max_height)
-        robots = randrange(1, 4)
+        robots = robots if robots else randrange(1, 4)
+
+        walls = set()
+
+        def is_occupied(x, y) -> bool:
+            loc = (x, y)
+            return loc in walls or loc in self.robotloc
 
         for _ in range(robots):
             loc = (randrange(0, width - 1), randrange(0, height - 1))
-            while self.is_occupied(*loc):
+            while is_occupied(*loc):
                 loc = (randrange(0, width - 1), randrange(0, height - 1))
 
             self.robotloc.append(loc)
 
         for _ in range(
-                randrange(int(width * height / 8), int(width * height / 2))):
+                # Might need to tweak  these, but at least we are more guaranteed to have a solution this way
+                randrange(width, max(width + 1, int(width * height / 5)))):
             loc = (randrange(0, width), randrange(0, height))
-            while self.is_occupied(*loc):
+            while is_occupied(*loc):
                 loc = (randrange(0, width), randrange(0, height))
 
-            self.walls.add(loc)
+            walls.add(loc)
 
         self.width = width
         self.height = height
@@ -204,7 +200,7 @@ class Maze:
             line = ""
             for j in range(width):
                 loc = (j, height - i - 1)
-                if loc in self.walls:
+                if loc in walls:
                     line += "#"
                 else:
                     line += "."
@@ -214,7 +210,7 @@ class Maze:
 
     def rand_goals(self) -> List[Tuple[int, int]]:
         free_spaces = filter(
-            lambda loc: not self.is_occupied(*loc),
+            lambda loc: (self.is_floor(*loc) and not loc in self.robotloc),
             product(range(0, self.width), range(0, self.height)))
         return sample(list(free_spaces), self.robots())
 

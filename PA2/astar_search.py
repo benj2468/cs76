@@ -8,26 +8,11 @@ class AstarNode:
     # each search node except the root has a parent node
     # and all search nodes wrap a state object
 
-    def __init__(self,
-                 state,
-                 heuristic,
-                 parent=None,
-                 transition_cost=0,
-                 sync=False):
+    def __init__(self, state, heuristic, parent=None, tot_cost=0):
         self.state = state
         self.parent = parent
 
-        self.heuristic = heuristic
-        self.transition_cost = transition_cost
-
-        self.expected_cost = heuristic
-        cur = self
-        while cur != None:
-            # Extension, add cost for length of the path as well...
-            if sync:
-                self.expected_cost += 1
-            self.expected_cost += cur.transition_cost
-            cur = cur.parent
+        self.expected_cost = tot_cost + heuristic
 
     def priority(self):
         return self.expected_cost
@@ -68,8 +53,7 @@ def backchain(node):
 
 def astar_search(search_problem, heuristic_fn, sync=False):
     start_node = AstarNode(search_problem.start_state,
-                           heuristic_fn(search_problem.start_state),
-                           sync=sync)
+                           heuristic_fn(search_problem.start_state))
     frontier = PriorityQueue()
     frontier.insert(start_node)
 
@@ -95,18 +79,15 @@ def astar_search(search_problem, heuristic_fn, sync=False):
         current = frontier.pop()
         solution.nodes_visited += 1
 
-        if current.state.goal_test():
+        if search_problem.goal_test(current.state):
             solution.path = backchain(current)
             solution.cost = get_visited(current)
             return solution
 
-        for (cost, neighbor) in current.state.get_successors():
+        for (cost, neighbor) in search_problem.get_successors(current.state):
             tot_cost = get_visited(current) + cost
-            next = AstarNode(neighbor,
-                             heuristic_fn(neighbor),
-                             current,
-                             cost,
-                             sync=sync)
+            next = AstarNode(neighbor, heuristic_fn(neighbor), current,
+                             tot_cost)
 
             if check_visited(next, tot_cost):
                 add_visited(next, tot_cost)

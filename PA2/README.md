@@ -4,11 +4,55 @@
 
 How do your implemented algorithms work? What design decisions did you make? How you laid out the problems?
 
-> TODO
+### A\*
+
+My algorithm works as follows:
+
+```
+Initialize an empty priority queue Q, add the start node to Q.
+
+Initialize an empty associative array A. For x \in A, A[x] = min cost from root for x. Add the start state with cost 0
+
+While Q is not empty {
+    c <- pop the lowest value off priority queue
+
+    if c is goal: end and backchain solution
+
+    for (cost, neighbor) of c {
+        tot_cost <- A[c] + cost
+        if neighbor has not been seen: add to queue
+        if neighbor has been seen with higher cost, add to queue
+    }
+}
+
+```
+
+Regarding implementing this psuedocode, I use a head to keep a priority queue. Each node needs to be compared, and it's comparison value is the total cost + the heuristic value.
+
+### MazeworldProblem
+
+All of the algorithms that are apart of the MazeworldProblem are relatively simple. The only one that contains slight complexity is the legal moves. The legal moves returns, for the provided state, a set of moves that are legal from the position. It loops over all possible moves, and returns a generator of the ones that are legal. The check for legality makes sure that a robot is:
+
+1. Moving into an open space (floor and not robot occupies) OR
+2. Not moving at all
+
+We then use this generator in the `get_successors()` to perform the actual transition.
+
+I decided to convert the list of goals into a list of tuples, and turned the robot locations also into a list of tuples. We then match up the sizes of these two tuples so that we require that A be in location 1 and B in 2 .... Using tuples to think of coordinates is much easier and requires less computation than making a what is a 2-d space into a 1-d array. I liked this, and made a few changes in the Maze.py file as well to accommodate this. The robot who's turn it is is specified by a variable in the state of the problem.
+
+At each state, only one robot can move. The action enum described those moves, and how they change the robot's location coordinates.
+
+I've added a new printing function for a maze to show the goal states as well. It can be notes, that storing the goals in the problem rather than in the maze is a waste of space, since the goals don't change. But I understand why we would want to store them in one place rather than another...
+
+### SensorlessProblem
+
+This implementation is even simpler than the previous. It is intriguing to note though, that without a heuristic this solution locates the robot, but it does not do so at the defined goal. Since the only place we use the goal state is in the heuristic.
 
 ## Evaluation
 
 Do your implemented algorithms actually work? How well? If it doesn’t work, can you tell why not? What partial successes did you have that deserve partial credit?
+
+My algorithms work properly. When compared to BFS, which we know is correct and optimal I get the same answer. In fact, I think my algorithms work relatively well. I know it works because it visits fewer nodes than does BFS, or an A\* search with the null heuristic.
 
 > TODO
 
@@ -79,4 +123,94 @@ Using a similar heuristic, but instead of the sum using the maximum still is opt
 
 ## Testing
 
-Tests for everything need to be written and run
+For my testing I have added the ability to create random maps. While this is nice to test working/not working on a variety of different solutions. For graphs of size <=40x40 my algorithm performs incredibly well. I have also test on graphs as large as 100x100 and the algorithm is able to complete find a solution, or determine no solution possible within a matter of seconds. The issue with my random graphs is that there will not always be a solution.
+
+I have also provided test code for random graphs on sensorless graphs. This also complete in a timely manor and returns realistic data. Issue with these is that if there is no solution, we ultimately have to run an entire BFS order search. which is WAY to slow, so we don't end up getting a solution in decent time.
+
+I have added a toggle called `sync` sync makes waiting in the same place also cost. Essentially, it means we also charge a robot for a stall, or a waiting to move. This makes us consider also the shortest timed path. Path with the fewest number of moves in total.
+
+Here are a few graphs that were generate by the random generator and their return values:
+
+```
+Mazeworld problem:
+##.........#....#........
+.......##..#.#...........
+.0........A#.#.#.#......#
+....#.#.#....#....##...#.
+.#.........#.#..#.......#
+
+attempted with search method Astar with heuristic manhattan_heuristic
+number of nodes visited: 10
+solution length: 10
+cost: 9
+```
+
+This is an example of a VERY easy one to solve. Since the heuristic of each consecutive square is monotonically decreasing so each best node is constantly popped off the stack.
+
+```
+Mazeworld problem:
+.......#..
+..#..C...#
+....#....#
+.#.....0..
+.#A....#..
+#1...##..2
+#...#.....
+.B#.#..#..
+..........
+........#.
+
+attempted with search method Astar with heuristic manhattan_heuristic
+number of nodes visited: 417
+solution length: 32
+cost: 16
+```
+
+Here is an interesting case, and it helps us understand why we have a larger solution length then we do cost. robot B gets to it's goal after only 2 moves. Meaning each other move by robot B will have (another state) will have cost 0 (i.e. B will never move again, but it's no move will be counted as a state).
+
+For the Sensorless Problem:
+
+```
+Blind robot problem:
+..0..
+A..#.
+...#.
+.##..
+.....
+.....
+.....
+#....
+attempted with search method Astar with heuristic manhattan_heuristic
+number of nodes visited: 37
+solution length: 21
+cost: 20
+```
+
+This one is incredible fast, as you can see there are no places were we really "get stuck" The cost here is simple the number of moves we need. The solution length is +1 the cost because it also has the start state
+
+```
+Blind robot problem:
+.....#...
+...#.....
+......#..
+#........
+.#A......
+...#.....
+..##.....
+.#.....#.
+.........
+...#.....
+.0......#
+.....#...
+.#..#....
+attempted with search method Astar with heuristic manhattan_heuristic
+number of nodes visited: 247
+solution length: 53
+cost: 52
+```
+
+Notice how with this solution we have areas where we kind-of get stuck, so we need to traverse out of those areas, which adds moves, but also confuses us because we need to go around the boundaries, forcing us to search more. (53:247) vs. (21:37) in previous example.
+
+## Extra Credit
+
+I have implemented the synchronous movement as seen in [`MazeworldProblemSync`](MazeworldProblemSync.py).
