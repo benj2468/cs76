@@ -13,9 +13,13 @@ class AstarNode:
         self.parent = parent
 
         self.expected_cost = tot_cost + heuristic
+        self.marked = False
 
     def priority(self):
         return self.expected_cost
+
+    def mark(self):
+        self.marked = True
 
     # comparison operator,
     # needed for heappush and heappop to work with AstarNodes:
@@ -26,9 +30,26 @@ class AstarNode:
 class PriorityQueue:
     def __init__(self) -> None:
         self.queue = []
+        self.visited = {}
 
-    def insert(self, value):
-        heappush(self.queue, value)
+    def add_visited(self, node: AstarNode, cost: int):
+        for prev_entry in self.queue:
+            if prev_entry.state == node.state:
+                prev_entry.mark()
+        self.visited[node.state.hashed()] = cost
+
+    def check_visited(self, node: AstarNode, cost: int):
+        neighbor = node.state.hashed()
+        return (not neighbor in self.visited) or (
+            neighbor in self.visited and self.visited[neighbor] > cost)
+
+    def get_visited(self, node: AstarNode):
+        return self.visited[node.state.hashed()]
+
+    def insert(self, value, cost):
+        if self.check_visited(value, cost):
+            self.add_visited(value, cost)
+            heappush(self.queue, value)
 
     def pop(self):
         return heappop(self.queue)
@@ -55,43 +76,31 @@ def astar_search(search_problem, heuristic_fn):
     start_node = AstarNode(search_problem.start_state,
                            heuristic_fn(search_problem.start_state))
     frontier = PriorityQueue()
-    frontier.insert(start_node)
 
     solution = SearchSolution(search_problem,
                               "Astar with heuristic " + heuristic_fn.__name__)
 
-    visited_cost = {}
-
-    def add_visited(node: AstarNode, cost: int):
-        visited_cost[node.state.hashed()] = cost
-
-    def check_visited(node: AstarNode, cost: int):
-        neighbor = node.state.hashed()
-        return (not neighbor in visited_cost) or (
-            neighbor in visited_cost and visited_cost[neighbor] > cost)
-
-    def get_visited(node: AstarNode):
-        return visited_cost[node.state.hashed()]
-
-    add_visited(start_node, 0)
+    frontier.insert(start_node, 0)
 
     while not frontier.is_empty():
         current = frontier.pop()
+
+        if current.marked:
+            continue
+
         solution.nodes_visited += 1
 
         if search_problem.goal_test(current.state):
             solution.path = backchain(current)
-            solution.cost = get_visited(current)
+            solution.cost = frontier.get_visited(current)
             return solution
 
         for (cost, neighbor) in search_problem.get_successors(current.state):
-            tot_cost = get_visited(current) + cost
+            tot_cost = frontier.get_visited(current) + cost
             next = AstarNode(neighbor, heuristic_fn(neighbor), current,
                              tot_cost)
 
-            if check_visited(next, tot_cost):
-                add_visited(next, tot_cost)
-                frontier.insert(next)
+            frontier.insert(next, tot_cost)
 
     solution.cost = float("inf")
     return solution
