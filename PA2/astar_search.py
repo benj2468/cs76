@@ -35,16 +35,16 @@ class PriorityQueue:
     def add_visited(self, node: AstarNode, cost: int):
         self.visited[node.state.hashed()] = cost
 
-    def check_visited(self, node: AstarNode, cost: int):
-        neighbor = node.state.hashed()
-        return (not neighbor in self.visited) or (
-            neighbor in self.visited and self.visited[neighbor] > cost)
+    def should_visit(self, node: AstarNode, cost: int):
+        state = node.state.hashed()
+        return (not state in self.visited) or (state in self.visited
+                                               and self.visited[state] > cost)
 
     def get_visited(self, node: AstarNode):
         return self.visited[node.state.hashed()]
 
     def insert(self, value, cost):
-        if self.check_visited(value, cost):
+        if self.should_visit(value, cost):
             self.add_visited(value, cost)
             heappush(self.queue, value)
 
