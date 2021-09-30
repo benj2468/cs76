@@ -33,9 +33,6 @@ class PriorityQueue:
         self.visited = {}
 
     def add_visited(self, node: AstarNode, cost: int):
-        for prev_entry in self.queue:
-            if prev_entry.state == node.state:
-                prev_entry.mark()
         self.visited[node.state.hashed()] = cost
 
     def check_visited(self, node: AstarNode, cost: int):
@@ -84,9 +81,6 @@ def astar_search(search_problem, heuristic_fn):
 
     while not frontier.is_empty():
         current = frontier.pop()
-
-        if current.marked:
-            continue
 
         solution.nodes_visited += 1
 
