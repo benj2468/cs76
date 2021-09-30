@@ -27,7 +27,7 @@ While Q is not empty {
 
 ```
 
-Regarding implementing this psuedocode, I use a head to keep a priority queue. Each node needs to be compared, and it's comparison value is the total cost + the heuristic value.
+Regarding implementing this psuedocode, I use a heap to keep a priority queue. Each node needs to be compared, and it's comparison value is the total cost + the heuristic value.
 
 ### MazeworldProblem
 
@@ -42,7 +42,9 @@ I decided to convert the list of goals into a list of tuples, and turned the rob
 
 At each state, only one robot can move. The action enum described those moves, and how they change the robot's location coordinates.
 
-I've added a new printing function for a maze to show the goal states as well. It can be notes, that storing the goals in the problem rather than in the maze is a waste of space, since the goals don't change. But I understand why we would want to store them in one place rather than another...
+I've added a new printing function for a maze to show the goal states as well.
+
+My heuristic for the maze problem is the sum of the manhattan distances from each location to it's designated solution. The proof for why this works in below.
 
 ### SensorlessProblem
 
@@ -93,7 +95,7 @@ We tack on the other binomial coefficient because we also need to count the poss
 
 4. If there are not many walls, n is large (say 100x100), and several robots (say 10), do you expect a straightforward breadth-first search on the state space to be computationally feasible for all start and goal pairs? Why or why not?
 
-No, a breadth first search would not be feasible, because it is likely that our solution state is very very far from our start state. We assume that the branching factor for each state is $O(5*k)$, and the depth could be as much as 200, that means our memory/time complexity is $O((5k)^{200})$, that's a huge number. This is incredibly unfeasible. Say we use the metrics from the question, we have time roughly $6.2 x 10^{339}$, that's more calculations clock-cycles then there are possible chess boards.
+No, a breadth first search would not be feasible, because it is likely that our solution state is very very far from our start state. We assume that the branching factor for each state is $O(5*k)$ ( in our implementation it would only be $k$ but consider the cycle of all $k$ robots going one state for simplicity of calculations), and the depth could be as much as 200, that means our memory/time complexity is $O((5k)^{200})$, that's a huge number. This is incredibly unfeasible. Say we use the metrics from the question, we have time roughly $6.2 x 10^{339}$, that's more calculations clock-cycles then there are possible chess boards.
 
 5. Describe a useful, monotonic heuristic function for this search space. Show that your heuristic is monotonic. See the textbook for a formal definition of monotonic.
 
@@ -107,9 +109,9 @@ $$
 
 > _Proof_
 >
-> Fix a robot, r, and consider two states $x$, $y$ where we can reach $y$ by perform the action $a$ on $x$. The first scenario is that $a = NA$, meaning the cost is $0$, in this case $h(x) = h(y)$, satisfying the condition. (We only have to worry about one robot moving, because only one robot can move at each state)
+> Fix a robot, r, and consider two states $x$, $y$ where we can reach $y$ by performing the action $a$ on $x$. The first scenario is that $a = NA$, meaning the cost is $0$, in this case $h(x) = h(y)$, satisfying the condition. (We only have to worry about one robot moving, because only one robot can move at each state)
 >
-> In the other scenarios, $c(x,a,y) = 1$. It is very easy to show though that the move to $y$ can only increase the manhattan distance by at most $2$ (by extending the shorted path manhattan distance from $x$).
+> In the other scenarios, $c(x,a,y) = 1$. It is very easy to show though that the move to $y$ can only increase the manhattan distance by at most $2$ (by extending the shorted path manhattan distance for $x$). Assume w.l.g that the shortest path leaves x to the (E). then in $a$ moves to the (N, S, W) we've added $2$ to our cost. If $a = E$ though, then $h(y) = h(x) - 1$, which obviously is OK.
 >
 > $$h(x) \leq c(x,a,y) + h(y) = 1 + h(y) \leq 1 + h(x) + 2 = h(x) + 3$$
 > Making the inequality hold.
@@ -120,23 +122,23 @@ The 8-puzzle problem is simple the maze problem when $k = n-1$ The heuristic I c
 
 7. The state space of the 8-puzzle is made of two disjoint sets. Describe how you would modify your program to prove this. (You do not have to implement this.)
 
-The state for our game can be described as two disjoint sets, being the set of robot locations, and the set of wall locations. That is enough information for us to accomplish our goal. We do not need to know where anything else is, or keep track of an entire map that is $nm$ in size. We only need to keep track of the squares that are filled, and keep track of the size of the space (width/height). This allows us to efficiently determine if a certain coordinate is occupied by a wall or a robot, otherwise it is clear and we can move there.
+The state for our game can be described as two disjoint sets, being the set of robot locations, and the set of wall locations. That is enough information for us to accomplish our goal. We do not need to know where anything else is, or keep track of an entire map that is $n*m$ in size. We only need to keep track of the squares that are filled, and keep track of the size of the space (width/height). This allows us to efficiently determine if a certain coordinate is occupied by a wall or a robot, otherwise it is clear and we can move there.
+
+This would save us some space. But since we are working on such small maps it probably won't make a big difference.
 
 ## Blind Robot Problem
 
 1. Describe what heuristic you used for the A\* search. Is the heuristic optimistic? Are there other heuristics you might use? (An excellent might compare a few different heuristics for effectiveness and make an argument about optimality.)
 
-I am using a heuristic that calculates the sum of the manhattan distances from all possible states that we current suspect. Consider that my solution only checks 10 nodes for a 5x6 grid, whose solution is a path of 10 nodes I imagine it is incredible fast and efficient.
+I am using a heuristic that calculates the sum of the manhattan distances from all possible states that we current suspect. Consider that my solution only checks 10 nodes for a 5x6 grid, whose solution is a path of 10 nodes I imagine it is a good heuristic efficient. Also, this is the same heuristic proves above to be monotonic.
 
 Using a similar heuristic, but instead of the sum using the maximum still is optimal, but expands more nodes 313 to be exact. This makes sense, given the hint in the assignment. We could in fact increase our maximum distance, but decrease the sum of the distances because we made more closer, or got rid of one along the way.
 
 ## Testing
 
-For my testing I have added the ability to create random maps. While this is nice to test working/not working on a variety of different solutions. For graphs of size <=40x40 my algorithm performs incredibly well. I have also test on graphs as large as 100x100 and the algorithm is able to complete find a solution, or determine no solution possible within a matter of seconds. The issue with my random graphs is that there will not always be a solution.
+For my testing I have added the ability to create random maps. While this is nice to test working/not working on a variety of different solutions. For graphs of size <=40x40 my algorithm performs incredibly well. I have also test on graphs as large as 100x100 and the algorithm is able to complete find a solution, or determine no solution possible within a matter of seconds. The issue with my random graphs is that there will not always be a solution, because a robot could be trapped.
 
 I have also provided test code for random graphs on sensorless graphs. This also complete in a timely manor and returns realistic data. Issue with these is that if there is no solution, we ultimately have to run an entire BFS order search. which is WAY to slow, so we don't end up getting a solution in decent time.
-
-I have added a toggle called `sync` sync makes waiting in the same place also cost. Essentially, it means we also charge a robot for a stall, or a waiting to move. This makes us consider also the shortest timed path. Path with the fewest number of moves in total.
 
 Here are a few graphs that were generate by the random generator and their return values:
 
@@ -222,7 +224,7 @@ Notice how with this solution we have areas where we kind-of get stuck, so we ne
 
 ## Extra Credit
 
-I have implemented the synchronous movement as seen in [`BONUS_MazeworldProblemSync`](BONUS_MazeworldProblemSync.py). Not much to tell here. We use a simple recursive DFS to find all the possible actions that we can get from a certain state.
+I have implemented the synchronous movement as seen in [`BONUS_MazeworldProblemSync`](BONUS_MazeworldProblemSync.py). Not much to tell here. We use a simple recursive call to find all the possible actions that we can get from a certain state.
 
 ## Testing and Running
 
