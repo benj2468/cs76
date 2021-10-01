@@ -30,13 +30,12 @@ test_maze3 = Maze("maze3.maz")
 test_3_1 = MazeworldProblem(test_maze3, [(1, 4), (1, 3), (1, 2)])
 test_maze(test_3_1)
 
-# test_maze3 = Maze("maze.maz")
-# test_3_1 = MazeworldProblem(test_maze3, [(5, 5), (8, 6)])
-# res = test_maze(test_3_1)
-# test_3_1.animate_path(res.path)
+test_maze3 = Maze("maze.maz")
+test_3_1 = MazeworldProblem(test_maze3, [(5, 5), (8, 6)])
+res = test_maze(test_3_1)
 
 for i in range(5):
-    rand = Maze(None, 40, 40)
+    rand = Maze(None, 60, 60)
     goals = rand.rand_goals()
     prob = MazeworldProblem(rand, goals)
     test_maze(prob)

@@ -81,6 +81,7 @@ def astar_search(search_problem, heuristic_fn):
 
     while not frontier.is_empty():
         current = frontier.pop()
+
         if current.removed:
             continue
 
@@ -94,7 +95,7 @@ def astar_search(search_problem, heuristic_fn):
         for (cost, neighbor) in search_problem.get_successors(current.state):
             tot_cost = frontier.get_visited(current) + cost
             next = AstarNode(neighbor, heuristic_fn(neighbor), current,
-                             tot_cost)
+                             tot_cost - cost + max(1, cost))
 
             frontier.insert(next, tot_cost)
 
