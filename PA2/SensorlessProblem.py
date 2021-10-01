@@ -1,5 +1,6 @@
 from __future__ import annotations
 from copy import deepcopy
+from os import stat
 
 from Maze import Maze
 from time import sleep
@@ -33,9 +34,8 @@ class SensorlessProblem:
 
     ## You write the good stuff here:
 
-    def __init__(self, maze: Maze, goal: Tuple[int, int]):
+    def __init__(self, maze: Maze):
         self.maze = maze
-        self.goal = goal
 
         options = set()
         for loc in product(range(self.maze.width), range(self.maze.height)):
@@ -44,14 +44,21 @@ class SensorlessProblem:
 
         self.start_state = State(options)
 
-        def manhattan_heuristic(state: State) -> int:
-            s = 0
-            gx, gy = self.goal
-            for x, y in state.options:
-                s += abs(gx - x) + abs(gy - y)
-            return s
+        def distance(state: State) -> int:
+            m = 0
+            for (x, y) in state.options:
+                for (x2, y2) in state.options:
+                    mu = 0
+                    for (x, y) in state.options:
+                        mu = max(mu, abs(x - x2) + abs(y - y2))
+                    m = max(mu, m)
+            return m
 
-        self.manhattan_heuristic = manhattan_heuristic
+        def options_heu(state: State) -> int:
+            return len(state.options) - 1
+
+        self.distance_hue = distance
+        self.options_heuristic = options_heu
 
     def goal_test(self, state: State):
         return len(state.options) == 1

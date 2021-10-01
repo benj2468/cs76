@@ -16,6 +16,8 @@ Initialize an empty associative array A. For x \in A, A[x] = min cost from root 
 While Q is not empty {
     c <- pop the lowest value off priority queue
 
+    if c is marked: skip
+
     if c is goal: end and backchain solution
 
     for (cost, neighbor) of c {
@@ -48,9 +50,9 @@ My heuristic for the maze problem is the sum of the manhattan distances from eac
 
 ### SensorlessProblem
 
-This implementation is even simpler than the previous. It is intriguing to note though, that without a heuristic this solution locates the robot, but it does not do so at the defined goal. Since the only place we use the goal state is in the heuristic.
+This implementation is even simpler than the previous.
 
-My heuristic for this problem is the sum of the manhattan distances for all the suspected locations.
+My heuristic for this problem is the maximum manhattan distance between any two options of any given state. This takes a LONG time to compute for larger graphs. $O(n^2)$ time. We could make it faster by doing clever computation when we generate the state though. I did not implement this faster one.
 
 ## Evaluation
 
@@ -241,25 +243,55 @@ cost: 37
 
 Here is an interesting case, and it helps us understand why we have a larger solution length then we do cost. one of the robots gets to it's goal before the other one, therefore it has to "forfeit" it's turn until the other one gets home.
 
-For the Sensorless Problem:
+For the Sensorless Problem: (Disregard the A, it doesn't mean anything here)
 
 ```
 Blind robot problem:
-..0..
-A..#.
-...#.
-.##..
-.....
-.....
-.....
-#....
-attempted with search method Astar with heuristic manhattan_heuristic
-number of nodes visited: 37  // Numbers are out of date since I've added the marking
-solution length: 21
-cost: 20
+...........#.#
+..#........A..
+..#...##.....#
+..............
+.#.......#...#
+..##..........
+...##.#.....#.
+
+attempted with search method Astar with heuristic options_heu
+number of nodes visited: 35234
+solution length: 28
+cost: 27
+
+----
+Blind robot problem:
+...........#.#
+..#........A..
+..#...##.....#
+..............
+.#.......#...#
+..##..........
+...##.#.....#.
+
+attempted with search method Astar with heuristic distance
+number of nodes visited: 3103
+solution length: 23
+cost: 22
 ```
 
-This one is incredible fast, as you can see there are no places were we really "get stuck" The cost here is simple the number of moves we need. The solution length is +1 the cost because it also has the start state
+Notice the difference between the two heuristics. Options being the number of options, and distance being the maximum distance between all pairs of options.
+
+Consider problem as such the following:
+
+```
+Blind robot problem:
+...........#.#
+..#........A#.
+..#...##.....#
+..............
+.#.......#...#
+..##..........
+...##.#.....#.
+```
+
+There is no way for the robot to locate itself, because it cannot fold all locations into one (notice the hold, or other room made up to the right of the character A).
 
 ```
 Blind robot problem:
