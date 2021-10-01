@@ -13,13 +13,13 @@ class AstarNode:
         self.parent = parent
 
         self.expected_cost = tot_cost + heuristic
-        self.marked = False
+        self.removed = False
 
     def priority(self):
         return self.expected_cost
 
-    def mark(self):
-        self.marked = True
+    def remove(self):
+        self.removed = True
 
     # comparison operator,
     # needed for heappush and heappop to work with AstarNodes:
@@ -33,18 +33,18 @@ class PriorityQueue:
         self.visited = {}
 
     def add_visited(self, node: AstarNode, cost: int):
-        self.visited[node.state.hashed()] = cost
-
-    def should_visit(self, node: AstarNode, cost: int):
-        state = node.state.hashed()
-        return (not state in self.visited) or (state in self.visited
-                                               and self.visited[state] > cost)
+        self.visited[node.state.hashed()] = (cost, node)
 
     def get_visited(self, node: AstarNode):
-        return self.visited[node.state.hashed()]
+        return self.visited[node.state.hashed()][0]
 
     def insert(self, value, cost):
-        if self.should_visit(value, cost):
+        state = value.state.hashed()
+        if not state in self.visited:
+            self.add_visited(value, cost)
+            heappush(self.queue, value)
+        elif self.visited[state][0] > cost:
+            self.visited[state][1].remove()
             self.add_visited(value, cost)
             heappush(self.queue, value)
 
@@ -81,6 +81,8 @@ def astar_search(search_problem, heuristic_fn):
 
     while not frontier.is_empty():
         current = frontier.pop()
+        if current.removed:
+            continue
 
         solution.nodes_visited += 1
 
