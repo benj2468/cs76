@@ -14,7 +14,7 @@ def test_maze(prob: SensorlessProblem):
     print(other)
     other = astar_search(prob, prob.distance_hue)
     print(other)
-    # prob.animate_path(other.path)
+    prob.animate_path(other.path)
 
 
 test_maze3 = Maze("maze3.maz")
@@ -23,8 +23,8 @@ sensorless = SensorlessProblem(test_maze3)
 test_maze(sensorless)
 
 # You can comment this out if it's not working, sometimes you get a bad graph and you have to restart.
-for i in range(5):
-    maze = Maze(None, 15, 15, robots=1)
-    print(maze)
-    prob = SensorlessProblem(maze)
-    test_maze(prob)
+# for i in range(5):
+#     maze = Maze(None, 15, 15, robots=1)
+#     print(maze)
+#     prob = SensorlessProblem(maze)
+#     test_maze(prob)
