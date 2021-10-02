@@ -1,28 +1,17 @@
+# Benjamin Cape - 21F - CS76
+# PA2
+# 10.02.10
+
 from MazeworldProblem import MazeworldProblem
 from Maze import Maze
 
-# from uninformed_search import bfs_search
-from astar_search import astar_search, bfs_search
+from astar_search import astar_search
 
 
-# null heuristic, useful for testing astar search without heuristic (uniform cost search).
-def null_heuristic(state):
-    return 0
-
-
-# Test problems
-
-
-def test_maze(prob: MazeworldProblem, check_bfs=False):
+def test_maze(prob: MazeworldProblem):
     print(prob)
     a_res = astar_search(prob, prob.manhattan_heuristic)
     print(a_res)
-    if check_bfs:
-        bfs_res = bfs_search(prob)
-
-        assert (len(bfs_res.path) >= len(a_res.path))
-        assert (bfs_res.nodes_visited >= a_res.nodes_visited)
-        print("CORRECT. By Proof of BFS correctness")
     return a_res
 
 

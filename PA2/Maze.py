@@ -1,40 +1,17 @@
+# Benjamin Cape - 21F - CS76
+# PA2
+# 10.02.10
+#
+# Partially provided, iterated and added random generation,
+# Changed to store locations as 2-tuples rather than a single list
+
 from __future__ import annotations
-from math import log2
-from time import sleep
 from typing import List, Set, Tuple
 from random import randrange, sample
 from itertools import product
 
-# Maze.py
-#  original version by db, Fall 2017
-#  Feel free to modify as desired.
-
-# Maze objects are for loading and displaying mazes, and doing collision checks.
-#  They are not a good object to use to represent the state of a robot mazeworld search
-#  problem, since the locations of the walls are fixed and not part of the state;
-#  you should do something else to represent the state. However, each Mazeworldproblem
-#  might make use of a (single) maze object, modifying it as needed
-#  in the process of checking for legal moves.
-
-# Test code at the bottom of this file shows how to load in and display
-#  a few maze data files (e.g., "maze1.maz", which you should find in
-#  this directory.)
-
-#  the order in a tuple is (x, y) starting with zero at the bottom left
-
-# Maze file format:
-#    # is a wall
-#    . is a floor
-# the command \robot x y adds a robot at a location. The first robot added
-# has index 0, and so forth.
-
 
 class Maze:
-
-    # internal structure:
-    #   self.width: number of columns
-    #   self.rows
-
     def __init__(self, mazefilename=None, *args, **kwargs):
 
         self.robotloc: List[Tuple[int, int]] = []
@@ -52,7 +29,6 @@ class Maze:
             if len(line) == 0:
                 pass
             elif line[0] == "\\":
-                #print("command")
                 # there's only one command, \robot, so assume it is that
                 parms = line.split()
                 x = int(parms[1])
@@ -99,8 +75,6 @@ class Maze:
     #  robot state, and generates a list of characters in order
     #  that they will need to be printed out in.
     def create_render_list(self):
-        #print(self.robotloc)
-
         renderlist = list(self.map)
 
         for robot_number, (x, y) in enumerate(self.robotloc):
@@ -115,7 +89,6 @@ class Maze:
 
         # use the renderlist to construct a string, by
         #  adding newlines appropriately
-
         s = ""
         for y in range(self.height - 1, -1, -1):
             for x in range(self.width):
@@ -164,7 +137,7 @@ class Maze:
 
         return s
 
-    # This Works
+    # I added this
     def rand(self, max_width: int, max_height: int, robots=None) -> Maze:
         width = randrange(5, max_width)
         height = randrange(5, max_height)
@@ -184,7 +157,6 @@ class Maze:
             self.robotloc.append(loc)
 
         for _ in range(
-                # Might need to tweak  these, but at least we are more guaranteed to have a solution this way
                 randrange(width, max(width + 1, int(width * height / 5)))):
             loc = (randrange(0, width), randrange(0, height))
             while is_occupied(*loc):

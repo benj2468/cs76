@@ -1,3 +1,6 @@
+# Benjamin Cape - 21F - CS76
+# PA2
+# 10.02.10
 from __future__ import annotations
 from copy import copy, deepcopy
 from Maze import Maze, robotchar
@@ -52,9 +55,6 @@ class State:
 
 
 class MazeworldProblem:
-
-    ## you write the constructor, and whatever methods your astar function needs
-
     def __init__(self, maze: Maze, goal_locations: List[Tuple[int, int]]):
         self.maze = maze
         self.goal_locations = goal_locations
@@ -134,12 +134,7 @@ class MazeworldProblem:
     def hashed(self) -> int:
         return f"Mazeworld problem: \n{self.maze}".__hash__()
 
-    # given a sequence of states (including robot turn), modify the maze and print it out.
-    #  (Be careful, this does modify the maze!)
-
     def animate_path(self, path: List[State]):
-        # reset the robot locations in the maze
-
         maze = self.maze
 
         for state in path:
@@ -148,9 +143,6 @@ class MazeworldProblem:
             print(s)
             sleep(1.0)
 
-
-## A bit of test code. You might want to add to it to verify that things
-#  work as expected.
 
 if __name__ == "__main__":
     test_maze2 = Maze("maze2.maz")

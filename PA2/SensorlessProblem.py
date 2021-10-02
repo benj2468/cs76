@@ -1,6 +1,9 @@
+# Benjamin Cape - 21F - CS76
+# PA2
+# 10.02.10
+
 from __future__ import annotations
 from copy import deepcopy
-from os import stat
 
 from Maze import Maze
 from time import sleep
@@ -29,11 +32,11 @@ class State:
     def hashed(self):
         return f"{self.options}".__hash__()
 
+    def __str__(self) -> str:
+        return f"Move: {self.previous_move}, Options: {self.options}"
+
 
 class SensorlessProblem:
-
-    ## You write the good stuff here:
-
     def __init__(self, maze: Maze):
         self.maze = maze
 
@@ -84,19 +87,12 @@ class SensorlessProblem:
     def __str__(self):
         return f"Blind robot problem: \n{self.maze}"
 
-        # given a sequence of states (including robot turn), modify the maze and print it out.
-        #  (Be careful, this does modify the maze!)
-
     def animate_path(self, path: List[State]):
-        # reset the robot locations in the maze
-
         for state in path:
             s = f"Move: {state.previous_move} \n{self.maze.with_potential_robots(state.options)}"
             print(s)
             sleep(1.0)
 
-
-## A bit of test code
 
 if __name__ == "__main__":
     test_maze3 = Maze("maze3.maz")

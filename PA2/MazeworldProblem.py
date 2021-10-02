@@ -1,6 +1,10 @@
+# Benjamin Cape - 21F - CS76
+# PA2
+# 10.02.10
+
 from __future__ import annotations
 from copy import deepcopy
-from Maze import Maze, robotchar
+from Maze import Maze
 from time import sleep
 from enum import Enum
 from itertools import zip_longest
@@ -37,11 +41,11 @@ class State:
     def hashed(self):
         return (self.robot, f"{self.robot_locs}").__hash__()
 
+    def __str__(self) -> str:
+        return f"Turn: {self.robot}, locations: {self.robot_locs}"
+
 
 class MazeworldProblem:
-
-    ## you write the constructor, and whatever methods your astar function needs
-
     def __init__(self, maze: Maze, goal_locations: List[Tuple[int, int]]):
         self.maze = maze
         self.goal_locations = goal_locations
@@ -99,10 +103,8 @@ class MazeworldProblem:
 
     # given a sequence of states (including robot turn), modify the maze and print it out.
     #  (Be careful, this does modify the maze!)
-
     def animate_path(self, path: List[State]):
         # reset the robot locations in the maze
-
         maze = self.maze
 
         for state in path:
@@ -111,9 +113,6 @@ class MazeworldProblem:
             print(s)
             sleep(1.0)
 
-
-## A bit of test code. You might want to add to it to verify that things
-#  work as expected.
 
 if __name__ == "__main__":
     test_maze2 = Maze("maze2.maz")

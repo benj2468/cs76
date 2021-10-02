@@ -1,3 +1,7 @@
+# Benjamin Cape - 21F - CS76
+# PA2
+# 10.02.10
+
 from SearchSolution import SearchSolution
 from heapq import heappush, heappop
 from collections import deque
@@ -5,9 +9,6 @@ from copy import copy
 
 
 class AstarNode:
-    # each search node except the root has a parent node
-    # and all search nodes wrap a state object
-
     def __init__(self, state, heuristic, parent=None, tot_cost=0):
         self.state = state
         self.parent = parent
@@ -55,9 +56,6 @@ class PriorityQueue:
         return len(self.queue) == 0
 
 
-# take the current node, and follow its parents back
-#  as far as possible. Grab the states from the nodes,
-#  and reverse the resulting list of states.
 def backchain(node):
     result = []
     current = node
@@ -100,47 +98,4 @@ def astar_search(search_problem, heuristic_fn):
             frontier.insert(next, tot_cost)
 
     solution.cost = float("inf")
-    return solution
-
-
-# OLD CODE
-class SearchNode:
-    def __init__(self, state, parent=None):
-        self.parent = parent
-        self.state = state
-
-
-def backtracking(solution, search_node: SearchNode) -> SearchSolution:
-    '''Bubble up from a search_node until parent is None (i.e. start node) and add all to the path of the solution'''
-    while search_node.parent:
-        solution.path.append(search_node.state)
-        search_node = search_node.parent
-    solution.path.append(search_node.state)
-    return solution
-
-
-def bfs_search(search_problem, node=None) -> SearchSolution:
-    if node == None:
-        node = SearchNode(search_problem.start_state)
-        solution = SearchSolution(search_problem, "BFS")
-    to_visit = deque()
-    to_visit.append(node)
-
-    visited = set()
-    visited.add(node.state)
-
-    while len(to_visit) > 0:
-        current = to_visit.popleft()
-        solution.nodes_visited += 1
-
-        for (_, next) in current.state.get_successors():
-            next = SearchNode(next, current)
-
-            if next.state.goal_test():
-                return backtracking(solution, next)
-            elif not next.state in visited:
-                to_visit.append(next)
-
-            visited.add(next.state)
-
     return solution
