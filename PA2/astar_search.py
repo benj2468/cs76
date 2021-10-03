@@ -50,7 +50,10 @@ class PriorityQueue:
             heappush(self.queue, value)
 
     def pop(self):
-        return heappop(self.queue)
+        res = heappop(self.queue)
+        while res.removed:
+            res = heappop(self.queue)
+        return res
 
     def is_empty(self):
         return len(self.queue) == 0
@@ -80,9 +83,6 @@ def astar_search(search_problem, heuristic_fn):
     while not frontier.is_empty():
         current = frontier.pop()
 
-        if current.removed:
-            continue
-
         solution.nodes_visited += 1
         if search_problem.goal_test(current.state):
             solution.path = backchain(current)
@@ -92,7 +92,7 @@ def astar_search(search_problem, heuristic_fn):
         for (cost, neighbor) in search_problem.get_successors(current.state):
             tot_cost = frontier.get_visited(current) + cost
             next = AstarNode(neighbor, heuristic_fn(neighbor), current,
-                             tot_cost - cost + max(1, cost))
+                             tot_cost)
 
             frontier.insert(next, tot_cost)
 
