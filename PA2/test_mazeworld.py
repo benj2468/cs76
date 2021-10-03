@@ -12,6 +12,8 @@ def test_maze(prob: MazeworldProblem):
     print(prob)
     a_res = astar_search(prob, prob.manhattan_heuristic)
     print(a_res)
+    # Animate the path is you wish!
+    prob.animate_path(a_res.path)
     return a_res
 
 

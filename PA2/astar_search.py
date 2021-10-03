@@ -84,7 +84,6 @@ def astar_search(search_problem, heuristic_fn):
             continue
 
         solution.nodes_visited += 1
-
         if search_problem.goal_test(current.state):
             solution.path = backchain(current)
             solution.cost = frontier.get_visited(current)

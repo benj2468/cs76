@@ -4,7 +4,7 @@
 
 from __future__ import annotations
 from copy import deepcopy
-from Maze import Maze
+from Maze import Maze, robotchar
 from time import sleep
 from enum import Enum
 from itertools import zip_longest
@@ -42,7 +42,7 @@ class State:
         return (self.robot, f"{self.robot_locs}").__hash__()
 
     def __str__(self) -> str:
-        return f"Turn: {self.robot}, locations: {self.robot_locs}"
+        return f"Turn: {robotchar(self.robot)}, locations: {self.robot_locs}"
 
 
 class MazeworldProblem:
@@ -109,7 +109,7 @@ class MazeworldProblem:
 
         for state in path:
             maze.robotloc = state.robot_locs
-            s = f"Turn: {state.robot}\n{self.maze.with_goals(self.goal_locations)}"
+            s = f"Turn: {robotchar(state.robot)}\n{self.maze.with_goals(self.goal_locations)}"
             print(s)
             sleep(1.0)
 
