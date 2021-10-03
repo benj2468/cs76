@@ -97,8 +97,8 @@ def astar_search(search_problem, heuristic_fn):
                 current,
                 # Another way of doing this is not consider all costs to be 1 in the queue
                 # Then we get shorter paths (same cost), but search more nodes
-                # tot_cost)
-                tot_cost + 1 - cost)
+                tot_cost)
+            # tot_cost + 1 - cost)
 
             frontier.insert(next, tot_cost)
 
