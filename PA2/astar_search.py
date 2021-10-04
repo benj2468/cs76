@@ -39,7 +39,7 @@ class PriorityQueue:
     def get_visited(self, node: AstarNode):
         return self.visited[node.state.hashed()][0]
 
-    def insert(self, value, cost):
+    def try_insert(self, value, cost):
         state = value.state.hashed()
         if not state in self.visited:
             self.add_visited(value, cost)
@@ -78,7 +78,7 @@ def astar_search(search_problem, heuristic_fn):
     solution = SearchSolution(search_problem,
                               "Astar with heuristic " + heuristic_fn.__name__)
 
-    frontier.insert(start_node, 0)
+    frontier.try_insert(start_node, 0)
 
     while not frontier.is_empty():
         current = frontier.pop()
@@ -90,17 +90,11 @@ def astar_search(search_problem, heuristic_fn):
             return solution
 
         for (cost, neighbor) in search_problem.get_successors(current.state):
-            tot_cost = frontier.get_visited(current) + cost
-            next = AstarNode(
-                neighbor,
-                heuristic_fn(neighbor),
-                current,
-                # Another way of doing this is not consider all costs to be 1 in the queue
-                # Then we get shorter paths (same cost), but search more nodes
-                # tot_cost)
-                tot_cost + 1 - cost)
+            tot_cost = frontier.get_visited(current)
+            next = AstarNode(neighbor, heuristic_fn(neighbor), current,
+                             tot_cost + 1)
 
-            frontier.insert(next, tot_cost)
+            frontier.try_insert(next, tot_cost + cost)
 
     solution.cost = float("inf")
     return solution

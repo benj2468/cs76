@@ -7,15 +7,11 @@ from Maze import Maze
 
 from astar_search import astar_search
 
-from astar_search2 import astar_search as astar_search2
-
 
 def test_maze(prob: MazeworldProblem):
     print(prob)
     a_res = astar_search(prob, prob.manhattan_heuristic)
     print("First: ", a_res)
-    a_res = astar_search2(prob, prob.manhattan_heuristic)
-    print(" Other: ", a_res)
     # Animate the path is you wish!
     # prob.animate_path(a_res.path)
     return a_res

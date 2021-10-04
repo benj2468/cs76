@@ -198,9 +198,9 @@ This would save us some space. But since we are working on such small maps it pr
 
 1. Describe what heuristic you used for the A\* search. Is the heuristic optimistic? Are there other heuristics you might use? (An excellent might compare a few different heuristics for effectiveness and make an argument about optimality.)
 
-I am using a heuristic that calculates the sum of the manhattan distances from all possible states that we current suspect. Consider that my solution only checks 10 nodes for a 5x6 grid, whose solution is a path of 10 nodes I imagine it is a good heuristic efficient. Also, this is the same heuristic proves above to be monotonic.
+I am using a heuristic that calculates the sum of the manhattan distances from all possible states that we current suspect. This heuristic thought does not get the optimal solution. My other heuristic, which expands more nodes and is slower, is in fact optimal I think.
 
-Using a similar heuristic, but instead of the sum using the maximum still is optimal, but expands more nodes 313 to be exact. This makes sense, given the hint in the assignment. We could in fact increase our maximum distance, but decrease the sum of the distances because we made more closer, or got rid of one along the way.
+Using a similar heuristic, but instead of the sum using the maximum is optimal, but expands more nodes. This makes sense, given the hint in the assignment. We could in fact increase our maximum distance, but decrease the sum of the distances because we made more closer, or got rid of one along the way.
 
 ## Testing
 
@@ -370,7 +370,7 @@ Blind robot problem:
 ...#.......
 
 attempted with search method Astar with heuristic distance
-number of nodes visited: 24878
+number of nodes visited: 10450
 solution length: 21
 cost: 20
 ```
@@ -412,6 +412,55 @@ There is no way for the robot to locate itself, because it cannot fold all locat
 ## Extra Credit
 
 I have implemented the synchronous movement as seen in [`BONUS_MazeworldProblemSync`](BONUS_MazeworldProblemSync.py). Not much to tell here. We use a simple recursive call to find all the possible actions that we can get from a certain state.
+
+```
+Mazeworld problem:
+.##..............#...........
+.............##.............#
+..#.##..#..#.....#.........##
+...#.................#.......
+...#.......#..........#......
+..............##..#..#.......
+.........#.#.#.............#.
+....##........###....#....#..
+.#.......#........#.....#...#
+...#.....#.......##.A..##.#..
+#.....#..#.#B.......#.#...##.
+#..##..................#.....
+#.............#.....#.##...#.
+##...........#.....#.........
+..#..........#..#....1..#....
+........#..#.....#.....#.....
+.............#...............
+.......###....#..........#...
+........#.....#..#.#..#..#.#.
+.##........#..#..........#..#
+....#...#....................
+#.#....#...............##....
+.....#...............#.......
+.#.##...........#....#..##...
+#....#.......#.......#.......
+................#.#.......##.
+........#.........#..........
+#..#.#.#............#...#.#..
+...#..............#..#....#.#
+#.....................#......
+..................#....#.....
+.......#.#....#.........##...
+....................#....##..
+#.#......#...................
+..............#.....#.#......
+0...#..#.#..........##.....#.
+...#...#...###...............
+
+attempted with search method Astar with heuristic manhattan_heuristic
+number of nodes visited: 1487
+solution length: 47
+cost: 59
+path: [[(20, 27), (12, 26)],[(19, 27), (12, 25)],[(19, 26), (13, 25)],[(18, 26), (13, 25)],[(17, 26), (13, 25)],[(17, 25), (14, 25)],[(16, 25), (15, 25)],[(15, 25), (15, 24)],[(14, 25), (15, 24)],[(13, 25), (15, 24)],[(13, 24), (15, 24)],[(12, 24), (15, 24)],[(11, 24), (16, 24)],[(10, 24), (17, 24)],[(9, 24), (18, 24)],[(8, 24), (18, 24)],[(7, 24), (18, 24)],[(7, 23), (18, 24)],[(7, 22), (18, 23)],[(7, 21), (18, 22)],[(6, 21), (18, 22)],[(6, 20), (18, 22)],[(6, 19), (18, 22)],[(6, 18), (18, 22)],[(6, 17), (18, 22)],[(6, 16), (19, 22)],[(6, 15), (20, 22)],[(6, 14), (20, 22)],[(6, 13), (20, 22)],[(6, 12), (20, 22)],[(6, 11), (20, 22)],[(6, 10), (20, 22)],[(6, 9), (20, 22)],[(6, 8), (20, 22)],[(6, 7), (20, 22)],[(5, 7), (20, 22)],[(5, 6), (21, 22)],[(5, 5), (21, 22)],[(4, 5), (21, 22)],[(4, 4), (21, 22)],[(4, 3), (21, 22)],[(3, 3), (21, 22)],[(3, 2), (21, 22)],[(3, 1), (21, 22)],[(2, 1), (21, 22)],[(1, 1), (21, 22)],[(0, 1), (21, 22)],]
+```
+
+Here is a solution to one of the extra credit problems.
 
 ## Testing and Running
 
