@@ -62,11 +62,11 @@ My algorithms work properly. When compared to BFS, which we know is correct and 
 
 One algorithm I wrote that doesn't work so well is the randomized one, since sometimes there is no solution if a blind maze has an enclosed space, and if that is the case we have to explore EVERY node, which takes too long for my computer to handle.
 
-I was experiencing some weird functionality with my A\* implementation. One way I was getting a cost of 10 path with a length of 19 and only visiting ~160 nodes. Another way (submitted) I am getting a length of 16, and visiting ~250 nodes. I think the later is correct, because it finds both the shortest path and the cheapest path. But the former also gets a shortest path and does so MUCH faster, by visited WAY fewer nodes. It does so by considering the cost of each node $1$ in terms of popping from the queue, but considers the cost in the actual path construction.
+**Analysis on strange behavior**
 
-I have submitted both as `astar_search.py` and `astar_search2.py`.
+I was experiencing some weird functionality with my A\* implementation. One way I was getting a cost of 10 path with a length of 19 and only visiting ~160 nodes. Another way (not submitted) I am getting a length of 16, and visiting ~250 nodes. Both find optimal outcomes, but the former visits fewer nodes. I think this is because on the former when I push a value to the stack, I always give it a cost of 1, rather than sometimes zero. By always giving it a path of 1, we pop ones that move at the same rate as popping ones that don't move, since we need to move in order to accomplish the goal, we visit fewer nodes.
 
-I have concluded based on the following example, that the former is better, and sometimes I guess even explores fewer nodes! This is my source of confusion though...
+I have concluded based on the following example, that the former is better, and sometimes I guess even finds a smaller path!
 
 ```
 First:  ----
