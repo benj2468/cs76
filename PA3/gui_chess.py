@@ -26,7 +26,6 @@ class ChessGui:
         self.svgWidget.setGeometry(50, 50, 400, 400)
         self.svgWidget.show()
 
-
     def start(self):
         self.timer = QTimer()
         self.timer.timeout.connect(self.make_move)
@@ -41,15 +40,12 @@ class ChessGui:
         svgbytes.append(svgboard)
         self.svgWidget.load(svgbytes)
 
-
     def make_move(self):
 
         print("making move, white turn " + str(self.game.board.turn))
 
         self.game.make_move()
         self.display_board()
-
-
 
 
 if __name__ == "__main__":
