@@ -20,6 +20,30 @@ root = TreeNode([a, b, c])
 
 TreeActions = ['LEFT', 'RIGHT']
 
+## Example from SA3
+
+h = TreeNode([TreeNode(val=-2), TreeNode(val=4)])
+i = TreeNode([TreeNode(val=6), TreeNode(val=-8)])
+l = TreeNode([TreeNode(val=-3), TreeNode(val=-1)])
+m = TreeNode([TreeNode(val=7), TreeNode(val=-5)])
+
+d = TreeNode([h, i])
+c = TreeNode([l, m])
+
+b = TreeNode([d, c])
+
+n = TreeNode([TreeNode(val=2), TreeNode(val=-4)])
+o = TreeNode([TreeNode(val=-6), TreeNode(val=8)])
+p = TreeNode([TreeNode(val=3), TreeNode(val=1)])
+q = TreeNode([TreeNode(val=-7), TreeNode(val=5)])
+
+f = TreeNode([n, o])
+g = TreeNode([p, q])
+
+c = TreeNode([f, g])
+
+a = TreeNode([b, c])
+
 
 class TestGame:
     def __init__(self, depth) -> None:
@@ -52,6 +76,12 @@ class TestGame:
 # Testing Codes
 from AlphaBetaAI import ab_minimax_search
 from MinimaxAI import minimax_search
+
+game = TestGame(depth=100)
+value, move = ab_minimax_search(game, a)
+print(f"Results from alpha-beta minimax: {value}, {move}")
+for state in game.calls:
+    print(state.val)
 
 
 def tester(depth1, depth2):
