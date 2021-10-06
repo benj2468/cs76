@@ -1,4 +1,6 @@
-# pip3 install python-chess
+# Benjamin Cape - 21F - CS76
+# PA3
+# 10.06.10
 
 import chess
 from IterativeDeepeningAI import IterativeDeepeningAI
@@ -8,16 +10,16 @@ from MinimaxAI import MinimaxAI
 from AlphaBetaAI import AlphaBetaAI
 from ChessGame import ChessGame
 
-player1 = HumanPlayer()
-player2 = RandomAI()
-player3 = MinimaxAI(3)
-player4 = AlphaBetaAI(5)
-player5 = IterativeDeepeningAI()
+# player1 = HumanPlayer()
+# player2 = RandomAI()
 
-game = ChessGame(player5, player5)
+player1 = AlphaBetaAI(1, "Alice")
+player2 = AlphaBetaAI(4, "Bob")
 
+# player1 = MinimaxAI(4)
+# player2 = MinimaxAI(3)
+
+game = ChessGame(player2, player1)
 while not game.is_game_over():
-    print(game)
     game.make_move()
-
-#print(hash(str(game.board)))
+    print(game)

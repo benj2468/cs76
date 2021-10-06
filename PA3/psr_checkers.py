@@ -1,6 +1,10 @@
+# Benjamin Cape - 21F - CS76
+# PA3
+# 10.06.10
+
 from enum import Enum
 from re import sub
-from typing import Generator, List, Optional, Tuple
+from typing import List, Optional, Tuple
 
 from AlphaBetaAI import ab_minimax_search
 
@@ -276,6 +280,8 @@ class PSRMiniMaxGame:
         for c in state.piece_colors.values():
             if c == state.turn:
                 s += (1.0 / len(state.pieces))
+            elif c == state.turn.next():
+                s -= (0.5 / len(state.pieces))
 
         return s
 

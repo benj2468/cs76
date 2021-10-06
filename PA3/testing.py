@@ -1,4 +1,6 @@
-from typing import List
+# Benjamin Cape - 21F - CS76
+# PA3
+# 10.06.10
 
 
 class TreeNode:

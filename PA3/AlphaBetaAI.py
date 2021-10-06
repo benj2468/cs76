@@ -1,3 +1,8 @@
+# Benjamin Cape - 21F - CS76
+# PA3
+# 10.06.10
+
+from datetime import datetime
 import chess
 from MinimaxAI import ChessMiniMaxGame
 from MinimaxAI import minimax_search
@@ -49,10 +54,17 @@ def ab_min_value(game, state, depth=0, alpha=float('-inf'), beta=float('inf')):
 
 
 class AlphaBetaAI():
-    def __init__(self, depth: int):
+    def __init__(self, depth: int, name: str):
         self.depth = depth
+        self.name = name
         pass
 
     def choose_move(self, board: chess.Board):
-        _val, res = ab_minimax_search(ChessMiniMaxGame(self.depth), board)
+        game = ChessMiniMaxGame(self.depth, board.turn)
+        start = datetime.now()
+        val, res = ab_minimax_search(game, board)
+        dur = datetime.now() - start
+        print(
+            f"{self.name}: A/B Pruning Visited: {game.calls} nodes, with depth: {game.depth_limit}, in {dur.microseconds / 1000}ms, best move value: {val}"
+        )
         return res

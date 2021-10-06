@@ -1,3 +1,7 @@
+# Benjamin Cape - 21F - CS76
+# PA3
+# 10.06.10
+
 import chess
 from AlphaBetaAI import ab_minimax_search
 from datetime import datetime
