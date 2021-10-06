@@ -6,7 +6,7 @@ from enum import Enum
 from re import sub
 from typing import List, Optional, Tuple
 
-from AlphaBetaAI import ab_minimax_search
+from multi_agent_ab import multi_agent_search
 
 
 class Color(Enum):
@@ -56,6 +56,8 @@ class Jump(Move):
 class Board:
     def __init__(self) -> None:
         self.turn = Color.Blue
+
+        self.players = 3
 
         self.moves = []
 
@@ -289,13 +291,14 @@ class PSRMiniMaxGame:
         state.pop()
 
 
-class PSRMiniMax():
+class PSRAgent():
     def __init__(self, depth: int):
         self.depth = depth
 
     def choose_move(self, board: Board):
         # Don't create a new board, use this one and use the push and pop features
-        _val, res = ab_minimax_search(PSRMiniMaxGame(self.depth), board)
+        _val, res = multi_agent_search(PSRMiniMaxGame(self.depth), board,
+                                       board.players)
         return res
 
 
