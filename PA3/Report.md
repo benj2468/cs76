@@ -148,3 +148,9 @@ Alpha Beta Pruning Visited: 1516 nodes, with depth: 4, in 56.544ms, best move va
 ```
 
 By searching one depth further, we get a slightly better outcome. Strange though, if we search one depth further, to 6, we get a negative payout. ** This might mean something is wrong with how I'm calculating the score **
+
+## Extra Credit
+
+For extra credit I have implemented the rock-paper-scissors checkers game created by Professor Bjoern. In order to accomplish this, I have implemented multi-agent maximization as well.
+
+I have also implemented a transposition table.

@@ -53,6 +53,7 @@ class ChessMiniMaxGame:
         self.calls += 1
 
     def actions(self, state: chess.Board):
+        # This was used for sorting for move-reordering, but it was slower and didn't make much change
         # def check_utility(action):
         #     state.push(action)
         #     util = self.utility(state)
@@ -74,10 +75,10 @@ class ChessMiniMaxGame:
     def utility(self, state: chess.Board):
         outcome = state.outcome()
         if outcome:
+            # For terminal states
             return 1 if outcome.winner == self.top_color else -1
 
         ## Calculate utility for non-terminal states
-        ## This evaluation function needs to be described in my document
         MAX_SCORE = 8 * 1 + 2 * 11 + 9
         scores = {
             chess.PAWN: 1,

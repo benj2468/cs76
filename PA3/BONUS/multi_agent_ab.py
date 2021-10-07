@@ -1,3 +1,8 @@
+# Benjamin Cape - 21F - CS76
+# PA3
+# 10.06.10
+
+
 def multi_agent_search(game, state, agents=2):
     value, move = multi_agent_max_search(game, state, agents)
     return (value, move)

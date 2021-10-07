@@ -3,7 +3,7 @@
 # 10.06.10
 
 import chess
-from AlphaBetaAI import ab_minimax_search
+from AlphaBetaAI import ABPruning
 from datetime import datetime
 
 from MinimaxAI import ChessMiniMaxGame
@@ -21,7 +21,8 @@ class IterativeDeepeningAI():
         time = 0
         while time < self.delay:
             start = datetime.now()
-            val, res = ab_minimax_search(ChessMiniMaxGame(depth), board)
+            val, res = ABPruning().ab_minimax_search(ChessMiniMaxGame(depth),
+                                                     board)
             time = (datetime.now() - start).microseconds // 1000
             if val > best_move[0]:
                 best_move = (val, res)

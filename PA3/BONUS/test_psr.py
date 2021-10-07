@@ -2,13 +2,13 @@
 # PA3
 # 10.06.10
 
-from psr_checkers import PSRAgent
-from PSRGame import PSRGame
+from psr_ai import PSRAIAgent
+from psr_game import PSRGame
 from time import sleep
 
-red = PSRAgent(1)
-yellow = PSRAgent(1)
-blue = PSRAgent(3)
+red = PSRAIAgent(1)
+yellow = PSRAIAgent(1)
+blue = PSRAIAgent(3)
 
 game = PSRGame(red, yellow, blue)
 
