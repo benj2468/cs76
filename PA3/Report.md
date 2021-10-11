@@ -268,7 +268,7 @@ Here is an example of it fluctuation. This is possible because it might look lik
 
 For extra credit I have implemented the rock-paper-scissors checkers game created by Professor Bjoern. In order to accomplish this, I have implemented multi-agent maximization as well.
 
-I have also implemented a transposition table.
+I have also implemented a transposition table. This works by hashing a state, and the depth at which we search for it. So if we want to search for the same depth again we can just use to lookup table.
 
 ```
 Alice: A/B Pruning Visited: 507 nodes, with depth: 3, in 51.165ms, best move value: 0.8717948717948718

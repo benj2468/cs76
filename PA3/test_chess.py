@@ -17,7 +17,7 @@ def test_game(player1, player2):
     while not game.is_game_over():
         game.make_move()
         # You can toggle this if you actually want to see the game
-        # print(game)
+        print(game)
         # sleep(0.1)
 
     print(game.board.outcome())
@@ -32,7 +32,7 @@ print("MINIMAX")
 test_game(RandomAI(), MinimaxAI(2))
 
 print("AB Pruner")
-test_game(RandomAI(), AlphaBetaAI(4))
+test_game(RandomAI(), AlphaBetaAI(4, "Bob"))
 
 print("AB 2 vs. AB 4")
 test_game(AlphaBetaAI(2, "Alice"), AlphaBetaAI(4, "Bob"))

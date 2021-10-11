@@ -120,15 +120,7 @@ class MinimaxAI():
         val, res = minimax_search(game, board)
         dur = datetime.now() - start
 
-        start2 = datetime.now()
-        game2 = ChessMiniMaxGame(self.depth, board.turn, reordering=True)
-        val2, res = minimax_search(game2, board)
-        dur2 = datetime.now() - start2
-
         print(
             f"Minimax visited {game.calls} nodes, with depth: {game.depth_limit}, in {dur.microseconds / 1000 }ms, best move value: {val}"
-        )
-        print(
-            f"Minimax with ordering visited {game2.calls} nodes, with depth: {game2.depth_limit}, in {dur2.microseconds / 1000 }ms, best move value: {val2}"
         )
         return res

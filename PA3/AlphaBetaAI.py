@@ -13,8 +13,9 @@ class ABPruning:
         self.table = {}
         self.total_visited = 0
 
-    def hash(self, state):
-        return str(str(state) + "\n" + str(state.turn)).__hash__()
+    def hash(self, state, depth):
+        return str(str(state) + "\n" + str(state.turn) + "\n" +
+                   str(depth)).__hash__()
 
     def ab_minimax_search(self, game, state):
         value, move = self.ab_max_value(game, state)
@@ -31,8 +32,8 @@ class ABPruning:
         if game.cut_off(state, depth):
             return game.utility(state), None
 
-        if self.hash(state) in self.table:
-            return self.table[self.hash(state)]
+        if self.hash(state, depth) in self.table:
+            return self.table[self.hash(state, depth)]
         game.call(state)
 
         v = None
@@ -47,7 +48,7 @@ class ABPruning:
                 return v, action
             alpha = max(alpha, v)
             game.clean(state)
-        self.table[self.hash(state)] = (v, move)
+        self.table[self.hash(state, depth)] = (v, move)
         return v, move
 
     def ab_min_value(self,
@@ -59,8 +60,8 @@ class ABPruning:
 
         if game.cut_off(state, depth):
             return game.utility(state), None
-        if self.hash(state) in self.table:
-            return self.table[self.hash(state)]
+        if self.hash(state, depth) in self.table:
+            return self.table[self.hash(state, depth)]
 
         game.call(state)
 
@@ -76,7 +77,7 @@ class ABPruning:
                 return v, action
             beta = min(beta, v)
             game.clean(state)
-        self.table[self.hash(state)] = (v, move)
+        self.table[self.hash(state, depth)] = (v, move)
         return v, move
 
 
@@ -84,13 +85,13 @@ class AlphaBetaAI():
     def __init__(self, depth: int, name: str):
         self.depth = depth
         self.name = name
-        self.pruner = ABPruning()
+        self.pruning = ABPruning()
         pass
 
     def choose_move(self, board: chess.Board):
         game = ChessMiniMaxGame(self.depth, board.turn)
         start = datetime.now()
-        val, res = self.pruner.ab_minimax_search(game, board)
+        val, res = ABPruning().ab_minimax_search(game, board)
         dur = datetime.now() - start
         print(
             f"{self.name}: A/B Pruning Visited: {game.calls} nodes, with depth: {game.depth_limit}, in {dur.microseconds / 1000}ms, best move value: {val}"
@@ -98,10 +99,18 @@ class AlphaBetaAI():
 
         game = ChessMiniMaxGame(self.depth, board.turn)
         start = datetime.now()
+        val, res = self.pruning.ab_minimax_search(game, board)
+        dur = datetime.now() - start
+        print(
+            f"{self.name}: A/B Pruning Visited, with table: {game.calls} nodes, with depth: {game.depth_limit}, in {dur.microseconds / 1000}ms, best move value: {val}"
+        )
+
+        game = ChessMiniMaxGame(self.depth, board.turn, reordering=True)
+        start = datetime.now()
         val, res = ABPruning().ab_minimax_search(game, board)
         dur = datetime.now() - start
         print(
-            f"{self.name}: A/B Pruning without table Visited: {game.calls} nodes, with depth: {game.depth_limit}, in {dur.microseconds / 1000}ms, best move value: {val}"
+            f"{self.name}: A/B Pruning Visited, with reordering: {game.calls} nodes, with depth: {game.depth_limit}, in {dur.microseconds / 1000}ms, best move value: {val}"
         )
 
         return res
