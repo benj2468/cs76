@@ -219,6 +219,8 @@ We see that performing move-reordering saves us some moves, and in fact also sav
 
 4. (iterative deepening) Verify that for some start states, best_move changes (and hopefully improves) as deeper levels are searched. Discuss the observations in your document.
 
+I made it such that iterative deepening takes a time as a parameter. It will search for search for at most that amount of time (actually a bit more, but after it takes this much time it won't start another deepening). We also stop if we ever reach a score of 1.
+
 For the chess starting state, an alpha-beta pruner can get the following 2 different result:
 
 ```
@@ -228,6 +230,39 @@ Alpha Beta Pruning Visited: 1516 nodes, with depth: 4, in 56.544ms, best move va
 ```
 
 By searching one depth further, we get a slightly better outcome. Strange though, if we search one depth further, to 6, we get a negative payout. I think this makes sense though, since with a depth of 5, there is always a way for the opponent to capture at least one of your pieces.
+
+```
+White to move
+
+Iterative Deepening time=2 AI Depth = 1 discovered best move: 0.5897435897435898, visited = 20
+Iterative Deepening time=29 AI Depth = 2 discovered best move: 0.5897435897435898, visited = 97
+Iterative Deepening time=98 AI Depth = 3 discovered best move: 0.5897435897435898, visited = 735
+Iterative Deepening time=504 AI Depth = 4 discovered best move: 0.6153846153846154, visited = 2578
+. . . . . k . r
+. . . . p . p p
+. . . . . n . .
+. . . p . p . .
+. . . . . . . .
+. . N . . . . .
+P P P P P P P P
+R . B Q K B . R
+----------------
+a b c d e f g h
+```
+
+Here is an example of where searching another depth gives us a better score, might be the same move, but at least we are surer of it.
+
+```
+White to move
+
+Iterative Deepening time=3 AI Depth = 1 discovered best move: 0.5897435897435898, visited = 31
+Iterative Deepening time=86 AI Depth = 2 discovered best move: 0.6153846153846154, visited = 199
+Iterative Deepening time=197 AI Depth = 3 discovered best move: 0.5897435897435898, visited = 1511
+Iterative Deepening time=229 AI Depth = 4 discovered best move: 0.6153846153846154, visited = 7801
+Iterative Deepening time=831 AI Depth = 5 discovered best move: 0.6153846153846154, visited = 46579
+```
+
+Here is an example of it fluctuation. This is possible because it might look like a great move in the short-run, but on the next turn we lose a piece. But maybe that's OK because we take an opponents piece after that. Remember that all of these scores are estimates based on pieces on the board, they are not true values for winning/losing.
 
 ## Extra Credit
 

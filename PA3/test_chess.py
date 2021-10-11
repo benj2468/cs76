@@ -11,21 +11,31 @@ from AlphaBetaAI import AlphaBetaAI
 from ChessGame import ChessGame
 from time import sleep
 
-# player1 = HumanPlayer()
-# player2 = RandomAI()
 
-player1 = RandomAI()
-# player1 = FirstMoveAI()
-player2 = AlphaBetaAI(3, "Alice")
+def test_game(player1, player2):
+    game = ChessGame(player1, player2)
+    while not game.is_game_over():
+        game.make_move()
+        # You can toggle this if you actually want to see the game
+        # print(game)
+        # sleep(0.1)
 
-# player1 = MinimaxAI(4)
-# player2 = MinimaxAI(3)
+    print(game.board.outcome())
 
-game = ChessGame(player2, player1)
-while not game.is_game_over():
-    game.make_move()
-    print(game)
-    # sleep(0.1)
 
-print(player2.pruner.total_visited)
-print(game.board.outcome())
+# Each of these were tests that I ran
+
+print("ITERATIVE DEEPENING")
+test_game(RandomAI(), IterativeDeepeningAI())
+
+print("MINIMAX")
+test_game(RandomAI(), MinimaxAI(2))
+
+print("AB Pruner")
+test_game(RandomAI(), AlphaBetaAI(4))
+
+print("AB 2 vs. AB 4")
+test_game(AlphaBetaAI(2, "Alice"), AlphaBetaAI(4, "Bob"))
+
+print("AB vs. Iterative Deepening")
+test_game(AlphaBetaAI(4, "Alice"), IterativeDeepeningAI())
