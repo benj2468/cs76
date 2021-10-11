@@ -2,13 +2,18 @@
 # PA3
 # 10.06.10
 
-from psr_ai import PSRAIAgent
+from psr_ai import PSRAIAgent, RandomAgent
 from psr_game import PSRGame
 from time import sleep
 
-red = PSRAIAgent(1)
-yellow = PSRAIAgent(1)
-blue = PSRAIAgent(3)
+red = RandomAgent()
+yellow = PSRAIAgent(3)
+blue = PSRAIAgent(2)
+
+# The aim of this game is to eliminate one other player.
+# Blue has to eliminate red,
+# red has to eliminate yellow
+# yellow has to eliminate blue.
 
 game = PSRGame(red, yellow, blue)
 

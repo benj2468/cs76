@@ -100,42 +100,122 @@ We know this makes sense, because there IS a way to keep all of your pieces with
 With Ordering:
 
 ```
+Alice: A/B Pruning Visited: 1604 nodes, with depth: 4, in 453.011ms, best move value: 0.02564102564102564
+Alice: A/B Pruning-with move-reordering Visited: 1578 nodes, with depth: 4, in 104.193ms, best move value: 0.02564102564102564
 r n b q k b n r
 p p p p p p p p
 . . . . . . . .
 . . . . . . . .
 . . . . . . . .
-. . . . . . . .
+. . . . . . . N
 P P P P P P P P
-R N B Q K B N R
+R N B Q K B . R
 ----------------
 a b c d e f g h
 
-White to move
+Black to move
 
-Alpha Beta Pruning Visited: 13059 nodes, with depth: 5, in 950.936ms, best move value: 1.0
-```
-
-Without Ordering:
-
-```
+Random AI recommending move g7g5
 r n b q k b n r
-p p p p p p p p
+p p p p p p . p
 . . . . . . . .
+. . . . . . p .
 . . . . . . . .
-. . . . . . . .
-. . . . . . . .
+. . . . . . . N
 P P P P P P P P
-R N B Q K B N R
+R N B Q K B . R
 ----------------
 a b c d e f g h
 
 White to move
 
-Alpha Beta Pruning Visited: 13181 nodes, with depth: 5, in 360.546ms, best move value: 1.0
+Alice: A/B Pruning Visited: 4128 nodes, with depth: 4, in 854.096ms, best move value: 0.02564102564102564
+Alice: A/B Pruning-with move-reordering Visited: 3435 nodes, with depth: 4, in 310.701ms, best move value: 0.02564102564102564
+r n b q k b n r
+p p p p p p . p
+. . . . . . . .
+. . . . . . N .
+. . . . . . . .
+. . . . . . . .
+P P P P P P P P
+R N B Q K B . R
+----------------
+a b c d e f g h
+
+Black to move
+
+Random AI recommending move d7d5
+r n b q k b n r
+p p p . p p . p
+. . . . . . . .
+. . . p . . N .
+. . . . . . . .
+. . . . . . . .
+P P P P P P P P
+R N B Q K B . R
+----------------
+a b c d e f g h
+
+White to move
+
+Alice: A/B Pruning Visited: 5902 nodes, with depth: 4, in 235.327ms, best move value: 0.05128205128205128
+Alice: A/B Pruning-with move-reordering Visited: 3619 nodes, with depth: 4, in 631.857ms, best move value: 0.05128205128205128
+r n b q k b n r
+p p p . p p . p
+. . . . . . . .
+. . . p . . . .
+. . . . . . . .
+. . . . . N . .
+P P P P P P P P
+R N B Q K B . R
+----------------
+a b c d e f g h
+
+Black to move
+
+Random AI recommending move a7a5
+r n b q k b n r
+. p p . p p . p
+. . . . . . . .
+p . . p . . . .
+. . . . . . . .
+. . . . . N . .
+P P P P P P P P
+R N B Q K B . R
+----------------
+a b c d e f g h
+
+White to move
+
+Alice: A/B Pruning Visited: 7879 nodes, with depth: 4, in 621.131ms, best move value: 0.05128205128205128
+Alice: A/B Pruning-with move-reordering Visited: 5736 nodes, with depth: 4, in 423.603ms, best move value: 0.05128205128205128
+r n b q k b n r
+. p p . p p . p
+. . . . . . . .
+p . . p . . . .
+. . . . . . . .
+. . . . . N . .
+P P P P P P P P
+R N B Q K B R .
+----------------
+a b c d e f g h
+
+Black to move
+
+Random AI recommending move b7b5
+r n b q k b n r
+. . p . p p . p
+. . . . . . . .
+p p . p . . . .
+. . . . . . . .
+. . . . . N . .
+P P P P P P P P
+R N B Q K B R .
+----------------
+a b c d e f g h
 ```
 
-The ordering saves us some nodes, a.k.a it allows us to prune more I guess. But it takes much longer because we have to sort the list of actions and their expected values. This probably makes more sense to do later in the game though, not at the beginning.
+We see that performing move-reordering saves us some moves, and in fact also saves us some time! When we re-order we are able to prune sooner, and therefore visit fewer nodes, but ultimately get the same expected outcome.
 
 4. (iterative deepening) Verify that for some start states, best_move changes (and hopefully improves) as deeper levels are searched. Discuss the observations in your document.
 
@@ -147,10 +227,56 @@ Alpha Beta Pruning Visited: 17528 nodes, with depth: 5, in 510.486ms, best move 
 Alpha Beta Pruning Visited: 1516 nodes, with depth: 4, in 56.544ms, best move value: 0.0
 ```
 
-By searching one depth further, we get a slightly better outcome. Strange though, if we search one depth further, to 6, we get a negative payout. ** This might mean something is wrong with how I'm calculating the score **
+By searching one depth further, we get a slightly better outcome. Strange though, if we search one depth further, to 6, we get a negative payout. I think this makes sense though, since with a depth of 5, there is always a way for the opponent to capture at least one of your pieces.
 
 ## Extra Credit
 
 For extra credit I have implemented the rock-paper-scissors checkers game created by Professor Bjoern. In order to accomplish this, I have implemented multi-agent maximization as well.
 
 I have also implemented a transposition table.
+
+```
+Alice: A/B Pruning Visited: 507 nodes, with depth: 3, in 51.165ms, best move value: 0.8717948717948718
+Alice: A/B Pruning without table Visited: 581 nodes, with depth: 3, in 61.191ms, best move value: 0.8717948717948718
+. . . . . k . .
+. . . . . . . .
+p . . . . . p N
+P . p . . . . .
+P p . . . . . p
+. . . . . . . .
+. . P P P P P P
+R N B Q K B . R
+----------------
+a b c d e f g h
+
+Black to move
+
+Random AI recommending move f8e8
+. . . . k . . .
+. . . . . . . .
+p . . . . . p N
+P . p . . . . .
+P p . . . . . p
+. . . . . . . .
+. . P P P P P P
+R N B Q K B . R
+----------------
+a b c d e f g h
+
+White to move
+
+Alice: A/B Pruning Visited: 0 nodes, with depth: 3, in 0.08ms, best move value: 0.8717948717948718
+Alice: A/B Pruning without table Visited: 778 nodes, with depth: 3, in 83.021ms, best move value: 0.8974358974358975
+. . . . k . . .
+. . . . . . . .
+p . . . . . p N
+P . p . . . . .
+P p . . . . . p
+. . . . P . . .
+. . P P . P P P
+R N B Q K B . R
+----------------
+a b c d e f g h
+```
+
+For some moves of the RandomAI, ones that lead us to perform very similar moves, or moves we have already done we can see the difference in time and nodes visited with the table and without the table. We don't count nodes as visited if we can simply look them up in the table.

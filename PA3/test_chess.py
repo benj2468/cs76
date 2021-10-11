@@ -16,7 +16,7 @@ from time import sleep
 
 player1 = RandomAI()
 # player1 = FirstMoveAI()
-player2 = AlphaBetaAI(3, "Bob")
+player2 = AlphaBetaAI(3, "Alice")
 
 # player1 = MinimaxAI(4)
 # player2 = MinimaxAI(3)

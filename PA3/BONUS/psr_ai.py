@@ -4,6 +4,7 @@
 
 from multi_agent_ab import multi_agent_search
 from psr_checkers import Board, Move
+import random
 
 
 class PSRMiniMaxGame:
@@ -48,6 +49,15 @@ class PSRAIAgent():
 
     def choose_move(self, board: Board):
         # Don't create a new board, use this one and use the push and pop features
-        _val, res = multi_agent_search(PSRMiniMaxGame(self.depth), board,
-                                       board.players)
-        return res
+        _val, move = multi_agent_search(PSRMiniMaxGame(self.depth), board,
+                                        board.players)
+        print("PSR AI recommending move " + str(move))
+        return move
+
+
+class RandomAgent():
+    def choose_move(self, board: Board):
+        moves = list(board.legal_moves())
+        move = random.choice(moves)
+        print("Random AI recommending move " + str(move))
+        return move

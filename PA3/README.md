@@ -6,7 +6,7 @@ There are a few test files, each can be run with the command: `python3 *.py`
 
 ```
 ./test_chess.py
-./test_psr.py
+./BONUS/test_psr.py
 ./testing.py
 ```
 

@@ -95,4 +95,13 @@ class AlphaBetaAI():
         print(
             f"{self.name}: A/B Pruning Visited: {game.calls} nodes, with depth: {game.depth_limit}, in {dur.microseconds / 1000}ms, best move value: {val}"
         )
+
+        game = ChessMiniMaxGame(self.depth, board.turn)
+        start = datetime.now()
+        val, res = ABPruning().ab_minimax_search(game, board)
+        dur = datetime.now() - start
+        print(
+            f"{self.name}: A/B Pruning without table Visited: {game.calls} nodes, with depth: {game.depth_limit}, in {dur.microseconds / 1000}ms, best move value: {val}"
+        )
+
         return res

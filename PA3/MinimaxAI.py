@@ -44,26 +44,36 @@ def min_value(game, state, depth):
 
 
 class ChessMiniMaxGame:
-    def __init__(self, depth_limit: int, top_color: chess.Color) -> None:
+    def __init__(self,
+                 depth_limit: int,
+                 top_color: chess.Color,
+                 reordering=False) -> None:
         self.calls = 0
         self.top_color = top_color
         self.depth_limit = depth_limit
+        self.reordering = reordering
 
     def call(self, _state):
         self.calls += 1
 
     def actions(self, state: chess.Board):
-        # This was used for sorting for move-reordering, but it was slower and didn't make much change
-        # def check_utility(action):
-        #     state.push(action)
-        #     util = self.utility(state)
-        #     state.pop()
-        #     return util
+        def check_utility(action):
+            state.push(action)
+            util = self.utility(state)
+            state.pop()
+            return util
 
-        # actions = sorted(state.legal_moves, key=check_utility)
+        if self.reordering:
+            actions = sorted(
+                state.legal_moves,
+                key=check_utility,
+            )
 
-        # actions.sort(key=check_utility)
-        return state.legal_moves
+            actions.sort(key=check_utility,
+                         reverse=self.top_color == state.turn)
+            return actions
+        else:
+            return state.legal_moves
 
     def result(self, state: chess.Board, action: chess.Move):
         state.push(action)
@@ -109,7 +119,16 @@ class MinimaxAI():
         game = ChessMiniMaxGame(self.depth, board.turn)
         val, res = minimax_search(game, board)
         dur = datetime.now() - start
+
+        start2 = datetime.now()
+        game2 = ChessMiniMaxGame(self.depth, board.turn, reordering=True)
+        val2, res = minimax_search(game2, board)
+        dur2 = datetime.now() - start2
+
         print(
             f"Minimax visited {game.calls} nodes, with depth: {game.depth_limit}, in {dur.microseconds / 1000 }ms, best move value: {val}"
+        )
+        print(
+            f"Minimax with ordering visited {game2.calls} nodes, with depth: {game2.depth_limit}, in {dur2.microseconds / 1000 }ms, best move value: {val2}"
         )
         return res

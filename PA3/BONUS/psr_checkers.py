@@ -52,7 +52,7 @@ class Jump(Move):
 
 class Board:
     def __init__(self) -> None:
-        self.turn = Color.Blue
+        self.turn = Color.Red
 
         self.players = 3
 
@@ -220,7 +220,7 @@ class Board:
         return bool(self.outcome())
 
     def __str__(self) -> str:
-        res = ""
+        res = "   | "
 
         order = [[(4, 0)], [(3, 0), (5, 0)], [(2, 0), (4, 1), (6, 0)],
                  [(1, 0), (3, 1), (5, 1), (7, 0)],
@@ -240,8 +240,13 @@ class Board:
                  [(1, 5), (3, 6), (5, 6), (7, 5)], [(2, 6), (4, 7), (6, 6)],
                  [(3, 7), (5, 7)], [(4, 8)]]
 
-        for row in order:
+        for i in range(9):
+            res += f"{i}  "
+        res += '\n'
+
+        for (i, row) in enumerate(order):
             first = row[0]
+            res += f"{str(i).zfill(2)} | "
             res += " " * first[0] * 3
             for elem in row:
                 if elem in self.pieces:
