@@ -114,7 +114,6 @@ class MinimaxAI():
         self.depth = depth
 
     def choose_move(self, board: chess.Board):
-        # Don't create a new board, use this one and use the push and pop features
         start = datetime.now()
         game = ChessMiniMaxGame(self.depth, board.turn)
         val, res = minimax_search(game, board)

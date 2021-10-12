@@ -52,11 +52,6 @@ if __name__ == "__main__":
 
     random.seed(1)
 
-    #player_ronda = RandomAI()
-
-    # to do: gui does not work well with HumanPlayer, due to input() use on stdin conflict
-    #   with event loop.
-
     player1 = RandomAI()
     player2 = RandomAI()
 

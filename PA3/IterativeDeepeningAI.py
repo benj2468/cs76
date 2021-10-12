@@ -19,7 +19,7 @@ class IterativeDeepeningAI():
         time = 0
         while time < self.delay:
             start = datetime.now()
-            game = ChessMiniMaxGame(depth, board.turn)
+            game = ChessMiniMaxGame(depth, board.turn, reordering=True)
             val, res = ABPruning().ab_minimax_search(game, board)
             time += (datetime.now() - start).microseconds // 1000
             print(
