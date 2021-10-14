@@ -1,5 +1,9 @@
+# Benjamin Cape - 21F - CS76
+# PA4
+# 10.13.10
+
 from collections import defaultdict, deque
-from typing import Any, Dict, Optional, Set
+from typing import Any, Dict, List, Mapping, Optional, Set, Tuple
 from enum import Enum
 from copy import copy, deepcopy
 
@@ -9,15 +13,18 @@ class VarHeuristic(Enum):
     DEGREE_TIEBREAKER = "DEGREE_TIEBREAKER"
 
 
+class ValHeuristic(Enum):
+    LCV = "LCV"
+
+
 class BinaryCSP:
     def __init__(self,
-                 variables,
-                 constraints,
-                 domains,
-                 var_h=Optional[VarHeuristic],
-                 use_val_h=False) -> None:
+                 variables: List[int],
+                 constraints: Mapping[Tuple[int, int], str],
+                 domains: Mapping[int, Set[int]],
+                 var_h: Optional[VarHeuristic] = None,
+                 val_h: Optional[ValHeuristic] = None) -> None:
         self.variables = variables
-        # Change constraints into a map from pairs of variables to pairs of options
         self.constraints = constraints
         self.domains = domains
         self.start_domains = deepcopy(domains)
@@ -28,7 +35,7 @@ class BinaryCSP:
             self.constraint_graph[v].add(u)
 
         self.var_h = var_h
-        self.use_val_h = use_val_h
+        self.val_h = val_h
 
     def mrv_heuristic(self, assignment, with_degree=False):
         res = (None, float('inf'))
@@ -63,22 +70,27 @@ class BinaryCSP:
             yield (val, count)
 
     def next_variable(self, assignment):
-        if self.var_h != None:
+        if self.var_h in [VarHeuristic.DEGREE_TIEBREAKER, VarHeuristic.MRV]:
             return self.mrv_heuristic(
                 assignment, self.var_h == VarHeuristic.DEGREE_TIEBREAKER)
-        else:
+        elif self.var_h == None:
             for var in self.variables:
                 if not var in assignment or assignment[var] == None:
                     return var
+        else:
+            self.var_h(assignment)
 
     def get_values(self, var, assignment):
-        if self.use_val_h:
+        if self.val_h == ValHeuristic.LCV:
             return map(lambda a: a[0],
                        sorted(
                            self.lcv_heuristic(var),
                            key=lambda a: a[1],
                        ))
-        return self.domains[var]
+        elif self.val_h == None:
+            return self.domains[var]
+        else:
+            self.val_h(var, assignment)
 
     def is_complete(self, assignment):
         for var in self.variables:
@@ -136,28 +148,37 @@ class BinaryCSP:
         var = self.next_variable(assignment)
         for val in self.get_values(var, assignment):
             calls += 1
-            prev_assignment = deepcopy(assignment)
             prev = deepcopy(self)
             if self.is_consistent(var, val, assignment):
-                assignment = {**assignment, var: val}
+                sub_assignment = {**assignment, var: val}
                 self.domains[var] = set([val])
                 inferences = self.inferences(
-                    assignment) if with_inference else {}
+                    sub_assignment) if with_inference else {}
                 if inferences != None:
                     (result,
                      calls) = self.backtrack({
-                         **assignment,
+                         **sub_assignment,
                          **inferences
                      }, calls, with_inference)
                     if result:
                         return (result, calls)
-            assignment = prev_assignment
             self = prev
 
         return (None, calls)
 
-    def print(self, assignment):
-        print(assignment)
+    def print(self, data: List[str], calls: int, time):
+        data.append(f"Variable Heuristic: {self.var_h}")
+        data.append(f"Value Heuristic: {self.val_h}")
+        data.append(f"Time Taken: {time.microseconds / 1000} ms")
+        data.append(f"Values Checked: {calls}")
+        data = "\n|- ".join(data)
+        print(f"""
+|-----
+|- Solution:
+|-
+|- {data}
+|-----
+""")
 
 
 from datetime import datetime
@@ -168,14 +189,10 @@ def test_board(csp: BinaryCSP):
     print("Without Inference: ")
     start = datetime.now()
     (assign, calls) = csp.backtracking_search()
-    print("Running Time: ", (datetime.now() - start).microseconds / 1000, "ms")
-    csp.print(assign)
-    print("Value checks: ", calls)
+    csp.print(assign, time=(datetime.now() - start), calls=calls)
 
     csp.domains = deepcopy(csp.start_domains)
     print("With Inference: ")
     start = datetime.now()
     (assign, calls) = csp.backtracking_search(with_inference=True)
-    print("Running Time: ", (datetime.now() - start).microseconds / 1000, "ms")
-    csp.print(assign)
-    print("Value checks: ", calls)
+    csp.print(assign, time=(datetime.now() - start), calls=calls)

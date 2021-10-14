@@ -1,9 +1,9 @@
-from copy import deepcopy
-from typing import Any, Generator, List, Mapping, Optional, Set, Tuple
-from collections import defaultdict
-from enum import Enum
-from csp import BinaryCSP, VarHeuristic, test_board
-from datetime import datetime
+# Benjamin Cape - 21F - CS76
+# PA4
+# 10.13.10
+
+from typing import List
+from csp import BinaryCSP, VarHeuristic, test_board, ValHeuristic
 
 
 class CircutPiece():
@@ -60,12 +60,8 @@ def do_overlap(piece1: CircutPiece, start1, piece2: CircutPiece, start2):
 
 
 class CircutLayout(BinaryCSP):
-    def __init__(self,
-                 height: int,
-                 width: int,
-                 pieces: List[CircutPiece],
-                 var_h=...,
-                 use_val_h=False) -> None:
+    def __init__(self, height: int, width: int, pieces: List[CircutPiece],
+                 **kwargs) -> None:
 
         variables = range(0, len(pieces))
         self.height = height
@@ -87,35 +83,42 @@ class CircutLayout(BinaryCSP):
                 for j in range(height - self.variable_map[piece].height + 1):
                     domains[piece].add((i, j))
 
-        super().__init__(variables,
-                         constraints,
-                         domains,
-                         var_h=var_h,
-                         use_val_h=use_val_h)
+        super().__init__(variables, constraints, domains, **kwargs)
 
-    def print(self, assignment) -> str:
+    def print(self, assignment, **kwargs) -> str:
+
+        solution = []
+        solution.append(
+            f"Variables: {', '.join(map(lambda x: str(x), self.variable_map.values()))}"
+        )
+
         if not assignment:
-            print("None")
-            return
-        realized = {}
-        for i in self.variables:
-            piece = self.variable_map[i]
-            if not i in assignment:
-                continue
-            for r in piece.realize(assignment[i]):
-                realized[r] = piece
+            res = ["None"]
+        else:
+            realized = {}
+            for i in self.variables:
+                piece = self.variable_map[i]
+                if not i in assignment:
+                    continue
+                for r in piece.realize(assignment[i]):
+                    realized[r] = piece
 
-        res = "Solution: \n"
-        for j in range(self.height - 1, -1, -1):
-            for i in range(self.width):
-                if (i, j) in realized:
-                    res += realized[(i, j)].letter
-                else:
-                    res += "."
+            res = []
+            for j in range(self.height - 1, -1, -1):
+                line = ""
+                for i in range(self.width):
+                    if (i, j) in realized:
+                        line += realized[(i, j)].letter
+                    else:
+                        line += "."
 
-            res += '\n'
+                res.append(line)
 
-        print(res)
+        solution.append(f"Assignment: ")
+        for line in res:
+            solution.append(f"  {line}")
+
+        super().print(solution, **kwargs)
 
     def is_consistent(self, var, val, assignment):
         for i in assignment.keys():
@@ -125,33 +128,46 @@ class CircutLayout(BinaryCSP):
         return True
 
 
-circut = CircutLayout(3,
-                      10, [
-                          CircutPiece("a", 3, 1),
-                          CircutPiece("a", 3, 1),
-                          CircutPiece("b", 5, 1),
-                          CircutPiece("b", 5, 1),
-                          CircutPiece("c", 2, 1),
-                          CircutPiece("c", 2, 1),
-                          CircutPiece("c", 2, 1),
-                          CircutPiece("d", 7, 1)
-                      ],
-                      var_h=VarHeuristic.DEGREE_TIEBREAKER,
-                      use_val_h=True)
-test_board(circut)
+# circut = CircutLayout(3,
+#                       10, [
+#                           CircutPiece("a", 3, 1),
+#                           CircutPiece("a", 3, 1),
+#                           CircutPiece("b", 5, 1),
+#                           CircutPiece("b", 5, 1),
+#                           CircutPiece("c", 2, 1),
+#                           CircutPiece("c", 2, 1),
+#                           CircutPiece("c", 2, 1),
+#                           CircutPiece("d", 7, 1)
+#                       ],
+#                       var_h=VarHeuristic.DEGREE_TIEBREAKER,
+#                       val_h=ValHeuristic.LCV)
+# test_board(circut)
+
+# circut = CircutLayout(3,
+#                       10, [
+#                           CircutPiece("a", 3, 1),
+#                           CircutPiece("a", 3, 1),
+#                           CircutPiece("b", 5, 1),
+#                           CircutPiece("b", 5, 1),
+#                           CircutPiece("c", 2, 1),
+#                           CircutPiece("c", 2, 1),
+#                           CircutPiece("c", 2, 1),
+#                           CircutPiece("d", 7, 1)
+#                       ],
+#                       var_h=VarHeuristic.DEGREE_TIEBREAKER)
+# test_board(circut)
 
 circut = CircutLayout(3,
-                      11, [
-                          CircutPiece("a", 3, 1),
-                          CircutPiece("a", 3, 1),
+                      13, [
                           CircutPiece("b", 5, 1),
                           CircutPiece("b", 9, 1),
                           CircutPiece("c", 2, 1),
                           CircutPiece("c", 2, 1),
                           CircutPiece("c", 2, 1),
-                          CircutPiece("d", 8, 1)
+                          CircutPiece("d", 8, 1),
+                          CircutPiece("a", 3, 4)
                       ],
                       var_h=VarHeuristic.DEGREE_TIEBREAKER,
-                      use_val_h=True)
+                      val_h=ValHeuristic.LCV)
 
 test_board(circut)
