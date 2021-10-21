@@ -7,6 +7,12 @@ from main import BinaryCSP, VarHeuristic, test_board, ValHeuristic
 
 
 class Coloring(BinaryCSP):
+    '''
+    A definition for a CSP for solving any sort of coloring
+
+    colors: # of colors we are allowed to use
+    Constraints: Which variables must have different colors
+    '''
     def __init__(self, variables: List[str], colors: int, constraints,
                  **kwargs) -> None:
 
@@ -22,6 +28,9 @@ class Coloring(BinaryCSP):
         super().__init__(variables, constraints_dict, domains, **kwargs)
 
     def print(self, assignment, **kwargs):
+        '''
+        Means for printing the assignment
+        '''
         solution = []
         solution.append(f"Variables: {self.variables}")
         solution.append(f"Colors: {self.colors}")
@@ -30,12 +39,17 @@ class Coloring(BinaryCSP):
         super().print(solution, **kwargs)
 
     def is_consistent(self, var, val, assignment) -> bool:
+        '''
+        Determine if the new var:val is consistent with the assignment
+        '''
         for neighbor in self.constraint_graph[var]:
             if neighbor in assignment and assignment[neighbor] == val:
                 return False
 
         return True
 
+
+# Testing
 
 coloring_problem = Coloring(
     ['WA', 'OR', 'CA', 'ID', 'MT', "BC", "WY"],

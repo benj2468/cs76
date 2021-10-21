@@ -7,6 +7,9 @@ from main import BinaryCSP, VarHeuristic, test_board, ValHeuristic
 
 
 class Point:
+    '''
+    A point is name up of an x and y coordinate
+    '''
     def __init__(self, x, y):
         self.x = x
         self.y = y
@@ -20,11 +23,19 @@ class Point:
 
 class CircutComponent:
     def __init__(self, d_start: Point, width: int, height: int):
+        '''
+        A circut compoint is a rectangular component that together with others can be built into tetris components
+
+        THe d_start is the delta from the starting point of the circut piece
+        '''
         self.start = d_start
         self.width = width
         self.height = height
 
     def realize(self, start):
+        '''
+        Given some starting point (bottom left), get all points in this component
+        '''
         points = []
         start = Point(start.x + self.start.x, start.y + self.start.y)
         for i in range(self.width):
@@ -34,6 +45,9 @@ class CircutComponent:
 
 
 class CircutPiece():
+    '''
+    A circut piece is a tetris piece. The letter is used to describe it in printing. The order of the components doesn't matter
+    '''
     def __init__(self, letter, components: List[CircutComponent]) -> None:
         self.letter = letter
         self.components = components
@@ -51,6 +65,9 @@ class CircutPiece():
             self.width_sub = min(self.width, comp.start.x)
 
     def realize(self, start):
+        '''
+        Given a starting point for the piece, calculate all points
+        '''
         points = []
         for component in self.components:
             comp_points = component.realize(start)
@@ -58,6 +75,9 @@ class CircutPiece():
         return points
 
     def size(self):
+        '''
+        maximum size, greatest height and greatest width
+        '''
         return self.height * self.width
 
     def __str__(self) -> str:
@@ -68,6 +88,9 @@ class CircutPiece():
 
 
 def do_overlap(piece1: CircutPiece, start1, piece2: CircutPiece, start2):
+    '''
+    Given two pieces and their respective starting places, determine if they are disjoint or not.
+    '''
     p1 = set(map(lambda x: str(x), piece1.realize(Point(*start1))))
     p2 = set(map(lambda x: str(x), piece2.realize(Point(*start2))))
 
@@ -75,6 +98,9 @@ def do_overlap(piece1: CircutPiece, start1, piece2: CircutPiece, start2):
 
 
 class CircutLayout(BinaryCSP):
+    '''
+    A CSP for solving the tetris layout problem
+    '''
     def __init__(self, height: int, width: int, pieces: List[CircutPiece],
                  **kwargs) -> None:
 
@@ -103,7 +129,9 @@ class CircutLayout(BinaryCSP):
         super().__init__(variables, constraints, domains, **kwargs)
 
     def print(self, assignment, **kwargs) -> str:
-
+        '''
+        Print the board with a specific assignment
+        '''
         solution = []
         solution.append(
             f"Variables: {', '.join(map(lambda x: str(x), self.variable_map.values()))}"
@@ -137,12 +165,17 @@ class CircutLayout(BinaryCSP):
         super().print(solution, **kwargs)
 
     def is_consistent(self, var, val, assignment):
+        '''
+        Determine if the new var:val is consistent with the assignment
+        '''
         for i in assignment.keys():
             piece = self.variable_map[i]
             if do_overlap(self.variable_map[var], val, piece, assignment[i]):
                 return False
         return True
 
+
+# Testing
 
 circut = CircutLayout(
     3,

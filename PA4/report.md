@@ -43,6 +43,18 @@ Yes, my algorithms work. And they work quite well it appears. With heuristics we
 1. (map coloring test) Describe the results from the test of your solver with and without heuristic, and with and without inference on the map coloring problem.
 
 ```
+|-----
+|- Solution:
+|-
+|- Variables: ['WA', 'OR', 'CA', 'ID', 'MT', 'BC', 'WY']
+|- Colors: 3
+|- Assignment: {'WA': 0, 'OR': 1, 'CA': 0, 'ID': 2, 'MT': 0, 'BC': 1, 'WY': 1}
+|- Variable Heuristic: None
+|- Value Heuristic: None
+|- Time Taken: 2.334 ms
+|- Values Checked: 11
+|-----
+
 Without Inference:
 
 |-----
@@ -53,7 +65,7 @@ Without Inference:
 |- Assignment: {'WA': 0, 'OR': 1, 'CA': 0, 'ID': 2, 'MT': 0, 'BC': 1, 'WY': 1}
 |- Variable Heuristic: None
 |- Value Heuristic: None
-|- Time Taken: 1.909 ms
+|- Time Taken: 2.078 ms
 |- Values Checked: 12
 |-----
 
@@ -64,39 +76,11 @@ With Inference:
 |-
 |- Variables: ['WA', 'OR', 'CA', 'ID', 'MT', 'BC', 'WY']
 |- Colors: 3
-|- Assignment: {'WA': 0, 'OR': 1, 'CA': 0, 'ID': 2, 'MT': 0, 'BC': 1, 'WY': 1}
-|- Variable Heuristic: None
-|- Value Heuristic: None
-|- Time Taken: 1.547 ms
-|- Values Checked: 10
-|-----
-
-Without Inference:
-
-|-----
-|- Solution:
-|-
-|- Variables: ['WA', 'OR', 'CA', 'ID', 'MT', 'BC', 'WY']
-|- Colors: 3
-|- Assignment: {'WY': 0, 'BC': 0, 'MT': 1, 'ID': 2, 'CA': 1, 'OR': 0, 'WA': 1}
-|- Variable Heuristic: VarHeuristic.DEGREE_TIEBREAKER
-|- Value Heuristic: None
-|- Time Taken: 2.635 ms
-|- Values Checked: 18
-|-----
-
-With Inference:
-
-|-----
-|- Solution:
-|-
-|- Variables: ['WA', 'OR', 'CA', 'ID', 'MT', 'BC', 'WY']
-|- Colors: 3
 |- Assignment: {'WY': 0, 'MT': 1, 'ID': 2, 'BC': 0, 'WA': 1, 'OR': 0, 'CA': 1}
 |- Variable Heuristic: VarHeuristic.DEGREE_TIEBREAKER
 |- Value Heuristic: None
-|- Time Taken: 1.119 ms
-|- Values Checked: 6
+|- Time Taken: 1.796 ms
+|- Values Checked: 8
 |-----
 
 Without Inference:
@@ -106,11 +90,11 @@ Without Inference:
 |-
 |- Variables: ['WA', 'OR', 'CA', 'ID', 'MT', 'BC', 'WY']
 |- Colors: 3
-|- Assignment: {'WY': 0, 'BC': 0, 'MT': 1, 'ID': 2, 'CA': 1, 'OR': 0, 'WA': 1}
+|- Assignment: {'CA': 0, 'WA': 0, 'OR': 1, 'ID': 0, 'MT': 0, 'BC': 0, 'WY': 0}
 |- Variable Heuristic: VarHeuristic.DEGREE_TIEBREAKER
-|- Value Heuristic: ValHeuristic.LCV
-|- Time Taken: 2.94 ms
-|- Values Checked: 21
+|- Value Heuristic: None
+|- Time Taken: 1.245 ms
+|- Values Checked: 8
 |-----
 
 With Inference:
@@ -123,8 +107,50 @@ With Inference:
 |- Assignment: {'WY': 0, 'MT': 1, 'ID': 2, 'BC': 0, 'WA': 1, 'OR': 0, 'CA': 1}
 |- Variable Heuristic: VarHeuristic.DEGREE_TIEBREAKER
 |- Value Heuristic: ValHeuristic.LCV
-|- Time Taken: 1.102 ms
+|- Time Taken: 1.415 ms
 |- Values Checked: 7
+|-----
+
+Without Inference:
+
+|-----
+|- Solution:
+|-
+|- Variables: ['WA', 'OR', 'CA', 'ID', 'MT', 'BC', 'WY']
+|- Colors: 3
+|- Assignment: {'WA': 0, 'OR': 0, 'CA': 0, 'ID': 0, 'MT': 0, 'BC': 0, 'WY': 0}
+|- Variable Heuristic: VarHeuristic.DEGREE_TIEBREAKER
+|- Value Heuristic: ValHeuristic.LCV
+|- Time Taken: 0.981 ms
+|- Values Checked: 7
+|-----
+
+With Inference:
+
+|-----
+|- Solution:
+|-
+|- Variables: ['WA', 'OR', 'CA', 'ID', 'MT', 'BC', 'WY']
+|- Colors: 2
+|- Assignment: None
+|- Variable Heuristic: VarHeuristic.DEGREE_TIEBREAKER
+|- Value Heuristic: ValHeuristic.LCV
+|- Time Taken: 0.412 ms
+|- Values Checked: 2
+|-----
+
+Without Inference:
+
+|-----
+|- Solution:
+|-
+|- Variables: ['WA', 'OR', 'CA', 'ID', 'MT', 'BC', 'WY']
+|- Colors: 2
+|- Assignment: None
+|- Variable Heuristic: VarHeuristic.DEGREE_TIEBREAKER
+|- Value Heuristic: ValHeuristic.LCV
+|- Time Taken: 2.953 ms
+|- Values Checked: 18
 |-----
 ```
 
@@ -157,6 +183,108 @@ $S = \{(x,y) | x > a_x + a_w \lor y > a_y + a_h \lor a_x > x + b_w \lor a_y > y 
 4. (circuit-board) Describe how your code converts constraints, etc, to integer values for use by the generic CSP solver.
 
 This is already described in the description, and it is specific to each problem. For example, with coloring we actually don't need to do this because strings are the same as integers according to python (both primitives),
+
+## Testing with the circut problem
+
+```
+With Inference:
+
+|-----
+|- Solution:
+|-
+|- Variables: (3, 1), (3, 1), (5, 1), (5, 1), (2, 1), (2, 1), (2, 1), (7, 1)
+|- Assignment:
+|-   aaaddddddd
+|-   bbbbbbbbbb
+|-   ccccaaa.cc
+|- Variable Heuristic: None
+|- Value Heuristic: None
+|- Time Taken: 25.653 ms
+|- Values Checked: 10
+|-----
+
+Without Inference:
+
+|-----
+|- Solution:
+|-
+|- Variables: (3, 1), (3, 1), (5, 1), (5, 1), (2, 1), (2, 1), (2, 1), (7, 1)
+|- Assignment:
+|-   aaaddddddd
+|-   bbbbbbbbbb
+|-   ccccaaa.cc
+|- Variable Heuristic: None
+|- Value Heuristic: None
+|- Time Taken: 884.736 ms
+|- Values Checked: 110178
+|-----
+
+With Inference:
+
+|-----
+|- Solution:
+|-
+|- Variables: (3, 1), (3, 1), (5, 1), (5, 1), (2, 1), (2, 1), (2, 1), (7, 1)
+|- Assignment:
+|-   bbbbb.cc.aaa.
+|-   cc.bbbbb.cc..
+|-   .aaaddddddd..
+|- Variable Heuristic: VarHeuristic.MRV
+|- Value Heuristic: ValHeuristic.LCV
+|- Time Taken: 15.402 ms
+|- Values Checked: 8
+|-----
+
+Without Inference:
+
+|-----
+|- Solution:
+|-
+|- Variables: (3, 1), (3, 1), (5, 1), (5, 1), (2, 1), (2, 1), (2, 1), (7, 1)
+|- Assignment:
+|-   bbbbb.cc.aaa.
+|-   cc.bbbbb.cc..
+|-   .aaaddddddd..
+|- Variable Heuristic: VarHeuristic.MRV
+|- Value Heuristic: ValHeuristic.LCV
+|- Time Taken: 39.677 ms
+|- Values Checked: 67
+|-----
+
+With Inference:
+
+|-----
+|- Solution:
+|-
+|- Variables: (3, 1), (3, 1), (5, 1), (5, 1), (2, 1), (2, 1), (2, 1), (7, 1)
+|- Assignment:
+|-   .bbbbbcccc
+|-   dddddddaaa
+|-   aaabbbbbcc
+|- Variable Heuristic: VarHeuristic.DEGREE_TIEBREAKER
+|- Value Heuristic: ValHeuristic.LCV
+|- Time Taken: 51.982 ms
+|- Values Checked: 63
+|-----
+
+Without Inference:
+
+|-----
+|- Solution:
+|-
+|- Variables: (3, 1), (3, 1), (5, 1), (5, 1), (2, 1), (2, 1), (2, 1), (7, 1)
+|- Assignment:
+|-   .bbbbbcccc
+|-   dddddddaaa
+|-   bbbbbaaacc
+|- Variable Heuristic: VarHeuristic.DEGREE_TIEBREAKER
+|- Value Heuristic: ValHeuristic.LCV
+|- Time Taken: 602.948 ms
+|- Values Checked: 3266
+|-----
+```
+
+Notice the SUBSTANTIAL speed increase when we use inference.
 
 ## Extra Credit
 
