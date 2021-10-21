@@ -173,7 +173,7 @@ circut = CircutLayout(3, 10, [
     CircutPiece("c", 2, 1),
     CircutPiece("d", 7, 1)
 ])
-# test_board(circut)
+test_board(circut)
 
 circut = CircutLayout(3,
                       10, [

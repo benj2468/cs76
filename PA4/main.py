@@ -179,7 +179,6 @@ class BinaryCSP:
 
         # Remove inconsistent values from the domains
         def remove_inconsistent_values(v, u):
-            with_inferences = {**assignment}
             removed_bool = False
             for x in copy(domains[v]):
                 found_consistent = self.has_consistent(v, x, u,
@@ -216,19 +215,19 @@ class BinaryCSP:
         '''
         Function actually called to initiate the backtracking search
         '''
-        calls = 0
-        return self.backtrack(self.default_assignment, calls, with_inference)
+        return self.backtrack(self.default_assignment, 0, 0, with_inference)
 
-    def backtrack(self, assignment, calls, with_inference):
+    def backtrack(self, assignment, values, calls, with_inference):
         '''
         Backtracking algorithm that searched for a valid assignment of the variables.
         '''
+        calls += 1
         if self.is_complete(assignment):
-            return (assignment, calls)
+            return (assignment, values, calls)
 
         var = self.next_variable(assignment)
         for val in self.get_values(var, assignment):
-            calls += 1
+            values += 1
             # Deep copy self so that if we fail, we get back to the state at this point in the tree.
             prev = deepcopy(self)
             if self.is_consistent(var, val, assignment):
@@ -241,16 +240,20 @@ class BinaryCSP:
                 if inferences != None:
                     # If we didn't fail with the inference, i.e. retrieved {} or {...} then we continue down the DFS tree
                     # returns calls so we keep track of ALL the calls
-                    (result, calls) = self.backtrack(
-                        self.assign_many(inferences, sub_assignment), calls,
-                        with_inference)
+                    (result, values, calls) = self.backtrack(
+                        self.assign_many(inferences, sub_assignment), values,
+                        calls, with_inference)
                     if result:
-                        return (result, calls)
+                        return (result, values, calls)
             self = prev
 
-        return (None, calls)
+        return (None, values, calls)
 
-    def print(self, data: List[str], calls: int = None, time=None):
+    def print(self,
+              data: List[str],
+              values: int = None,
+              calls: int = None,
+              time=None):
         '''
         Print the CSP with the provided previous data
         '''
@@ -258,8 +261,10 @@ class BinaryCSP:
         data.append(f"Value Heuristic: {self.val_h}")
         if time:
             data.append(f"Time Taken: {time.microseconds / 1000} ms")
+        if values != None:
+            data.append(f"Values Checked: {values}")
         if calls != None:
-            data.append(f"Values Checked: {calls}")
+            data.append(f"Calls to Backtracking: {calls}")
         data = "\n|- ".join(data)
         print(f"""
 |-----
@@ -277,11 +282,17 @@ def test_board(csp: BinaryCSP):
     csp.domains = deepcopy(csp.start_domains)
     print("With Inference: ")
     start = datetime.now()
-    (assign, calls) = csp.backtracking_search(with_inference=True)
-    csp.print(assign, time=(datetime.now() - start), calls=calls)
+    (assign, values, calls) = csp.backtracking_search(with_inference=True)
+    csp.print(assign,
+              time=(datetime.now() - start),
+              calls=calls,
+              values=values)
 
     csp.domains = deepcopy(csp.start_domains)
     print("Without Inference: ")
     start = datetime.now()
-    (assign, calls) = csp.backtracking_search()
-    csp.print(assign, time=(datetime.now() - start), calls=calls)
+    (assign, values, calls) = csp.backtracking_search()
+    csp.print(assign,
+              time=(datetime.now() - start),
+              calls=calls,
+              values=values)

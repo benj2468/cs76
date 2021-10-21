@@ -145,8 +145,8 @@ class BuildSections(BinaryCSP):
 
 
 file_name = "cs1_b.txt"
-leaders = 10
-students = 100
+leaders = 15
+students = 150
 times = [10, 11, 12, 13, 14, 15, 16, 17, 18]
 days = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday"]
 

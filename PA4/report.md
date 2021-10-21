@@ -43,6 +43,8 @@ Yes, my algorithms work. And they work quite well it appears. With heuristics we
 1. (map coloring test) Describe the results from the test of your solver with and without heuristic, and with and without inference on the map coloring problem.
 
 ```
+With Inference:
+
 |-----
 |- Solution:
 |-
@@ -51,8 +53,9 @@ Yes, my algorithms work. And they work quite well it appears. With heuristics we
 |- Assignment: {'WA': 0, 'OR': 1, 'CA': 0, 'ID': 2, 'MT': 0, 'BC': 1, 'WY': 1}
 |- Variable Heuristic: None
 |- Value Heuristic: None
-|- Time Taken: 2.334 ms
+|- Time Taken: 1.65 ms
 |- Values Checked: 11
+|- Calls to Backtracking: 8
 |-----
 
 Without Inference:
@@ -65,8 +68,9 @@ Without Inference:
 |- Assignment: {'WA': 0, 'OR': 1, 'CA': 0, 'ID': 2, 'MT': 0, 'BC': 1, 'WY': 1}
 |- Variable Heuristic: None
 |- Value Heuristic: None
-|- Time Taken: 2.078 ms
+|- Time Taken: 1.368 ms
 |- Values Checked: 12
+|- Calls to Backtracking: 8
 |-----
 
 With Inference:
@@ -76,11 +80,12 @@ With Inference:
 |-
 |- Variables: ['WA', 'OR', 'CA', 'ID', 'MT', 'BC', 'WY']
 |- Colors: 3
-|- Assignment: {'WY': 0, 'MT': 1, 'ID': 2, 'BC': 0, 'WA': 1, 'OR': 0, 'CA': 1}
+|- Assignment: {'WA': 0, 'OR': 1, 'CA': 0, 'ID': 2, 'BC': 1, 'MT': 0, 'WY': 1}
 |- Variable Heuristic: VarHeuristic.DEGREE_TIEBREAKER
 |- Value Heuristic: None
-|- Time Taken: 1.796 ms
-|- Values Checked: 8
+|- Time Taken: 1.594 ms
+|- Values Checked: 12
+|- Calls to Backtracking: 8
 |-----
 
 Without Inference:
@@ -90,11 +95,12 @@ Without Inference:
 |-
 |- Variables: ['WA', 'OR', 'CA', 'ID', 'MT', 'BC', 'WY']
 |- Colors: 3
-|- Assignment: {'CA': 0, 'WA': 0, 'OR': 1, 'ID': 0, 'MT': 0, 'BC': 0, 'WY': 0}
+|- Assignment: {'WA': 0, 'OR': 1, 'CA': 0, 'ID': 2, 'MT': 0, 'BC': 1, 'WY': 1}
 |- Variable Heuristic: VarHeuristic.DEGREE_TIEBREAKER
 |- Value Heuristic: None
-|- Time Taken: 1.245 ms
-|- Values Checked: 8
+|- Time Taken: 1.43 ms
+|- Values Checked: 12
+|- Calls to Backtracking: 8
 |-----
 
 With Inference:
@@ -104,11 +110,12 @@ With Inference:
 |-
 |- Variables: ['WA', 'OR', 'CA', 'ID', 'MT', 'BC', 'WY']
 |- Colors: 3
-|- Assignment: {'WY': 0, 'MT': 1, 'ID': 2, 'BC': 0, 'WA': 1, 'OR': 0, 'CA': 1}
+|- Assignment: {'WA': 0, 'OR': 1, 'CA': 0, 'ID': 2, 'BC': 1, 'MT': 0, 'WY': 1}
 |- Variable Heuristic: VarHeuristic.DEGREE_TIEBREAKER
 |- Value Heuristic: ValHeuristic.LCV
-|- Time Taken: 1.415 ms
+|- Time Taken: 1.016 ms
 |- Values Checked: 7
+|- Calls to Backtracking: 8
 |-----
 
 Without Inference:
@@ -121,8 +128,9 @@ Without Inference:
 |- Assignment: {'WA': 0, 'OR': 0, 'CA': 0, 'ID': 0, 'MT': 0, 'BC': 0, 'WY': 0}
 |- Variable Heuristic: VarHeuristic.DEGREE_TIEBREAKER
 |- Value Heuristic: ValHeuristic.LCV
-|- Time Taken: 0.981 ms
+|- Time Taken: 0.707 ms
 |- Values Checked: 7
+|- Calls to Backtracking: 8
 |-----
 
 With Inference:
@@ -135,8 +143,9 @@ With Inference:
 |- Assignment: None
 |- Variable Heuristic: VarHeuristic.DEGREE_TIEBREAKER
 |- Value Heuristic: ValHeuristic.LCV
-|- Time Taken: 0.412 ms
-|- Values Checked: 2
+|- Time Taken: 1.778 ms
+|- Values Checked: 14
+|- Calls to Backtracking: 7
 |-----
 
 Without Inference:
@@ -149,9 +158,11 @@ Without Inference:
 |- Assignment: None
 |- Variable Heuristic: VarHeuristic.DEGREE_TIEBREAKER
 |- Value Heuristic: ValHeuristic.LCV
-|- Time Taken: 2.953 ms
-|- Values Checked: 18
+|- Time Taken: 5.011 ms
+|- Values Checked: 46
+|- Calls to Backtracking: 23
 |-----
+
 ```
 
 Here are my results from the coloring problem with and without heuristics and with and without inferences. It is interesting to note that with the heuristic and without inference we sometimes do worse than otherwise. This is probably because we are on such a small graph that we aren't seeing the benefits of the heuristic.
@@ -199,8 +210,9 @@ With Inference:
 |-   ccccaaa.cc
 |- Variable Heuristic: None
 |- Value Heuristic: None
-|- Time Taken: 25.653 ms
+|- Time Taken: 25.686 ms
 |- Values Checked: 10
+|- Calls to Backtracking: 9
 |-----
 
 Without Inference:
@@ -215,8 +227,9 @@ Without Inference:
 |-   ccccaaa.cc
 |- Variable Heuristic: None
 |- Value Heuristic: None
-|- Time Taken: 884.736 ms
+|- Time Taken: 156.605 ms
 |- Values Checked: 110178
+|- Calls to Backtracking: 7549
 |-----
 
 With Inference:
@@ -226,13 +239,14 @@ With Inference:
 |-
 |- Variables: (3, 1), (3, 1), (5, 1), (5, 1), (2, 1), (2, 1), (2, 1), (7, 1)
 |- Assignment:
-|-   bbbbb.cc.aaa.
-|-   cc.bbbbb.cc..
-|-   .aaaddddddd..
+|-   .bbbbbcccc
+|-   dddddddaaa
+|-   aaabbbbbcc
 |- Variable Heuristic: VarHeuristic.MRV
 |- Value Heuristic: ValHeuristic.LCV
-|- Time Taken: 15.402 ms
-|- Values Checked: 8
+|- Time Taken: 49.358 ms
+|- Values Checked: 63
+|- Calls to Backtracking: 28
 |-----
 
 Without Inference:
@@ -242,13 +256,14 @@ Without Inference:
 |-
 |- Variables: (3, 1), (3, 1), (5, 1), (5, 1), (2, 1), (2, 1), (2, 1), (7, 1)
 |- Assignment:
-|-   bbbbb.cc.aaa.
-|-   cc.bbbbb.cc..
-|-   .aaaddddddd..
+|-   .bbbbbcccc
+|-   dddddddaaa
+|-   bbbbbaaacc
 |- Variable Heuristic: VarHeuristic.MRV
 |- Value Heuristic: ValHeuristic.LCV
-|- Time Taken: 39.677 ms
-|- Values Checked: 67
+|- Time Taken: 547.663 ms
+|- Values Checked: 3266
+|- Calls to Backtracking: 129
 |-----
 
 With Inference:
@@ -263,8 +278,9 @@ With Inference:
 |-   aaabbbbbcc
 |- Variable Heuristic: VarHeuristic.DEGREE_TIEBREAKER
 |- Value Heuristic: ValHeuristic.LCV
-|- Time Taken: 51.982 ms
+|- Time Taken: 51.05 ms
 |- Values Checked: 63
+|- Calls to Backtracking: 28
 |-----
 
 Without Inference:
@@ -279,16 +295,128 @@ Without Inference:
 |-   bbbbbaaacc
 |- Variable Heuristic: VarHeuristic.DEGREE_TIEBREAKER
 |- Value Heuristic: ValHeuristic.LCV
-|- Time Taken: 602.948 ms
+|- Time Taken: 599.002 ms
 |- Values Checked: 3266
+|- Calls to Backtracking: 129
 |-----
 ```
 
-Notice the SUBSTANTIAL speed increase when we use inference. It is interesting to note that combining heuristic and inference does worse than no heuristics and inference. This might show that my heuristics don't work properly, but I don't believe that is the case, since with the coloring problem we do in fact see the heuristics doing a good job.
+Notice the SUBSTANTIAL speed increase when we use inference. It is interesting to note that combining heuristic and inference does worse than no heuristics and inference. This might show that my heuristics don't work properly, but I don't believe that is the case, since with the coloring problem we do in fact see the heuristics doing a good job. Rather, This is simply a function of the ordering being incredibly good. Notice if I change the order of the variables I get worse output:
+
+```
+With Inference:
+
+|-----
+|- Solution:
+|-
+|- Variables: (3, 1), (3, 1), (2, 1), (2, 1), (2, 1), (5, 1), (5, 1), (7, 1)
+|- Assignment:
+|-   aaaddddddd
+|-   bbbbbbbbbb
+|-   ccccaaa.cc
+|- Variable Heuristic: None
+|- Value Heuristic: None
+|- Time Taken: 138.229 ms
+|- Values Checked: 170
+|- Calls to Backtracking: 26
+|-----
+```
+
+Whereas the values for with heuristic is the same. The reasons for this are that I was lucky in picking an ordering that was in fact better than the heuristics!
 
 ## Extra Credit
 
 For the extra credit, I have attempted to complete the cs1 assignment problem, though that proved difficult.
+
+I feel like I was unable to properly define the constraints such that this puzzle is consistently solved properly. Thought I was close. Code can be seen in `cs.py` One thing I think trying to solve this problem helped me with was better defining a generic CSP solver! Here is a solution I got with the code on a small problem, but running the code multiple times doesn't always solve it... strange
+
+```
+With Inference:
+
+|-----
+|- Solution:
+|-
+|- Assignment:
+|-   Section ('Monday', 1800)
+|-       - Harold Reynolds
+|-       - Justin Petrarca
+|-       - Marilyn Seat
+|-       - Alexander Yutzy
+|-       - *Krista Hays
+|-   Section ('Friday', 1000)
+|-       - Carol Hazel
+|-       - Steven Leeper
+|-       - Joe Douglas
+|-       - Goldie Simmons
+|-       - *Brent Schaeffer
+|-   Section ('Sunday', 1800)
+|-       - Timothy Lennard
+|-       - Jennifer Petrovic
+|-       - Todd Huggins
+|-       - Aaron Dale
+|-       - *Allen Facundo
+|-   Section ('Wednesday', 1700)
+|-       - Thomas Gray
+|-       - Norma Beard
+|-       - Elizabeth Faiella
+|-       - Wanda Alix
+|-       - *Javier Panning
+|-   Section ('Tuesday', 1400)
+|-       - Timothy Mercer
+|-       - Elizabeth Young
+|-       - Juanita Jenkins
+|-       - Jeff Walker
+|-       - *Melvin Heath
+|- Variable Heuristic: VarHeuristic.DEGREE_TIEBREAKER
+|- Value Heuristic: None
+|- Time Taken: 973.219 ms
+|- Values Checked: 66
+|- Calls to Backtracking: 26
+|-----
+
+Without Inference:
+
+|-----
+|- Solution:
+|-
+|- Assignment:
+|-   Section ('Monday', 1800)
+|-       - Harold Reynolds
+|-       - Justin Petrarca
+|-       - Marilyn Seat
+|-       - Alexander Yutzy
+|-       - *Krista Hays
+|-   Section ('Friday', 1000)
+|-       - Carol Hazel
+|-       - Steven Leeper
+|-       - Joe Douglas
+|-       - Goldie Simmons
+|-       - *Brent Schaeffer
+|-   Section ('Sunday', 1800)
+|-       - Timothy Lennard
+|-       - Jennifer Petrovic
+|-       - Todd Huggins
+|-       - Aaron Dale
+|-       - *Allen Facundo
+|-   Section ('Wednesday', 1700)
+|-       - Thomas Gray
+|-       - Norma Beard
+|-       - Elizabeth Faiella
+|-       - Wanda Alix
+|-       - *Javier Panning
+|-   Section ('Tuesday', 1400)
+|-       - Timothy Mercer
+|-       - Elizabeth Young
+|-       - Juanita Jenkins
+|-       - Jeff Walker
+|-       - *Melvin Heath
+|- Variable Heuristic: VarHeuristic.DEGREE_TIEBREAKER
+|- Value Heuristic: None
+|- Time Taken: 199.615 ms
+|- Values Checked: 66
+|- Calls to Backtracking: 26
+|-----
+```
 
 I have also implemented a more tetris like solution to the circut problem. See `circut_EXTRA.py`.
 
@@ -298,16 +426,36 @@ With Inference:
 |-----
 |- Solution:
 |-
-|- Variables: (3, 1), (3, 1), (5, 2), (1, 2), (3, 2), (2, 1), (2, 1), (2, 1)
+|- Variables: (3, 1), (3, 1), (5, 2), (1, 2), (3, 2), (2, 1), (2, 1)
 |- Assignment:
-|-   eeeffdhhgg
-|-   eeecfdbbbg
-|-   aaaccccccg
+|-   eeeffd..gg
+|-   eeecfdaaag
+|-   bbbccccccg
 |- Variable Heuristic: VarHeuristic.DEGREE_TIEBREAKER
 |- Value Heuristic: ValHeuristic.LCV
-|- Time Taken: 651.692 ms
-|- Values Checked: 1010
+|- Time Taken: 34.741 ms
+|- Values Checked: 9
+|- Calls to Backtracking: 8
+|-----
+
+Without Inference:
+
+|-----
+|- Solution:
+|-
+|- Variables: (3, 1), (3, 1), (5, 2), (1, 2), (3, 2), (2, 1), (2, 1)
+|- Assignment:
+|-   eeeffd..gg
+|-   eeecfdaaag
+|-   bbbccccccg
+|- Variable Heuristic: VarHeuristic.DEGREE_TIEBREAKER
+|- Value Heuristic: ValHeuristic.LCV
+|- Time Taken: 134.064 ms
+|- Values Checked: 276
+|- Calls to Backtracking: 18
 |-----
 ```
 
 The solution for a tetris-like circut puzzle.
+
+This is accomplished by the technique noted in the description above of checking if any of the realized locations overlap. I could speed this up by checking the same rectangular check on each block. That would be effective for larger graphs.
