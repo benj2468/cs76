@@ -284,7 +284,7 @@ Without Inference:
 |-----
 ```
 
-Notice the SUBSTANTIAL speed increase when we use inference.
+Notice the SUBSTANTIAL speed increase when we use inference. It is interesting to note that combining heuristic and inference does worse than no heuristics and inference. This might show that my heuristics don't work properly, but I don't believe that is the case, since with the coloring problem we do in fact see the heuristics doing a good job.
 
 ## Extra Credit
 

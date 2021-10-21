@@ -92,7 +92,7 @@ class BinaryCSP:
                 res = (v, len(domain))
             elif len(domain) == res[1]:
                 if with_degree and self.degree_heuristic(
-                        v, assignment) > self.degree_heuristic(
+                        v, assignment) < self.degree_heuristic(
                             res[1], assignment):
                     res = (v, len(domain))
         return res[0]
@@ -113,13 +113,12 @@ class BinaryCSP:
         Least Constraining variable heuristic - take variable that restricts the least other variables domains
         '''
         for val in self.domains[var]:
-            count = 0
+            restr = 0
             for neighbor in self.constraint_graph[var]:
-                count += len(self.domains[neighbor])
                 if val in self.domains[neighbor]:
-                    count -= 1
+                    restr += 1
 
-            yield (val, count)
+            yield (val, restr)
 
     def next_variable(self, assignment):
         '''
@@ -140,11 +139,8 @@ class BinaryCSP:
         Get the values of the specific variable, given an existing assignment - will potentially use heuristic
         '''
         if self.val_h == ValHeuristic.LCV:
-            return map(
-                lambda a: a[0],
-                sorted(self.lcv_heuristic(var),
-                       key=lambda a: a[1],
-                       reverse=True))
+            return map(lambda a: a[0],
+                       sorted(self.lcv_heuristic(var), key=lambda a: a[1]))
         elif self.val_h == None:
             return self.domains[var]
         else:
@@ -160,14 +156,13 @@ class BinaryCSP:
 
         return True
 
-    def has_consistent(self, var, val, other_var):
+    def has_consistent(self, var, val, other_var, assignment):
         '''
         Check if there is a way to make other_var consistent with the assignment of val to var.
         '''
         for y in self.domains[other_var]:
-            if self.is_consistent(
-                    other_var, y,
-                    self.assign_one(var, val, self.default_assignment)):
+            if self.is_consistent(other_var, y,
+                                  self.assign_one(var, val, assignment)):
                 return True
         return False
 
@@ -177,7 +172,6 @@ class BinaryCSP:
 
         This will edit self
         '''
-        # Start only with the ones that are imediatly changed, this will grow as we make more restrictions to domains
         queue = deque(self.constraints)
 
         inferences = self.default_assignment
@@ -185,9 +179,11 @@ class BinaryCSP:
 
         # Remove inconsistent values from the domains
         def remove_inconsistent_values(v, u):
+            with_inferences = {**assignment}
             removed_bool = False
             for x in copy(domains[v]):
-                found_consistent = self.has_consistent(v, x, u)
+                found_consistent = self.has_consistent(v, x, u,
+                                                       self.default_assignment)
                 if not found_consistent:
                     domains[v].remove(x)
                     # If we make the domain empty, we know we failed, so return None.
