@@ -324,6 +324,36 @@ With Inference:
 
 Whereas the values for with heuristic is the same. The reasons for this are that I was lucky in picking an ordering that was in fact better than the heuristics!
 
+Note I am also able to solve the whole US map with 5 colors. Attempting to solve with four colors either doesn't work or takes too long.
+
+```
+With Inference:
+
+|-----
+|- Solution:
+|-
+|- Variables: ['AK', 'AL', 'AR', 'AZ', 'CA', 'CO', 'CT', 'DC', 'DE',
+'FL', 'GA', 'HI', 'IA', 'ID', 'IL', 'IN', 'KS', 'KY', 'LA', 'MA',
+'MD', 'ME', 'MI', 'MN', 'MO', 'MS', 'MT', 'NC', 'ND', 'NE', 'NH',
+'NJ', 'NM', 'NV', 'NY', 'OH', 'OK', 'OR', 'PA', 'RI', 'SC', 'SD',
+'TN', 'TX', 'UT', 'VA', 'VT', 'WA', 'WI', 'WV', 'WY']
+|- Colors: 5
+|- Assignment: {'AK': 0, 'AL': 0, 'AR': 0, 'AZ': 0, 'CA': 1, 'CO': 1,
+'CT': 0, 'DC': 0, 'DE': 0, 'FL': 1, 'GA': 2, 'HI': 0, 'IA': 0,
+'ID': 0, 'IL': 1, 'IN': 0, 'KS': 0, 'KY': 2, 'LA': 1, 'MA': 1,
+'MD': 1, 'ME': 0, 'MI': 1, 'MN': 1, 'MO': 3, 'MS': 2, 'MT': 1,
+'NC': 0, 'ND': 0, 'NE': 2, 'NH': 2, 'NJ': 1, 'NM': 2, 'NV': 2,
+'NY': 2, 'OH': 3, 'OK': 4, 'OR': 3, 'PA': 4, 'RI': 2, 'SC': 1,
+'SD': 3, 'TN': 1, 'TX': 3, 'UT': 3, 'VA': 3, 'VT': 0, 'WA': 1,
+'WI': 2, 'WV': 0, 'WY': 4}
+|- Variable Heuristic: VarHeuristic.DEGREE_TIEBREAKER
+|- Value Heuristic: ValHeuristic.LCV
+|- Time Taken: 61.988 ms
+|- Values Checked: 51
+|- Calls to Backtracking: 52
+|-----
+```
+
 ## Extra Credit
 
 For the extra credit, I have attempted to complete the cs1 assignment problem, though that proved difficult.
