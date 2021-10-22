@@ -115,9 +115,8 @@ class BinaryCSP:
         for val in self.domains[var]:
             restr = 0
             for neighbor in self.constraint_graph[var]:
-                restr = len(self.domains[neighbor])
                 if val in self.domains[neighbor]:
-                    restr -= 1
+                    restr += 1
 
             yield (val, restr)
 
@@ -140,11 +139,8 @@ class BinaryCSP:
         Get the values of the specific variable, given an existing assignment - will potentially use heuristic
         '''
         if self.val_h == ValHeuristic.LCV:
-            return map(
-                lambda a: a[0],
-                sorted(self.lcv_heuristic(var),
-                       key=lambda a: a[1],
-                       reverse=True))
+            return map(lambda a: a[0],
+                       sorted(self.lcv_heuristic(var), key=lambda a: a[1]))
         elif self.val_h == None:
             return self.domains[var]
         else:
