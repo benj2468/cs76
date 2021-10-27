@@ -8,6 +8,9 @@ one:
 all:
 	python3 solve_sudoku.py all_cells.cnf
 
+cell:
+	python3 solve_sudoku.py cell.cnf
+
 rows:
 	python3 solve_sudoku.py rows.cnf
 

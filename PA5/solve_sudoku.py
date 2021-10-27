@@ -5,6 +5,7 @@
 from display import display_sudoku_solution
 import random, sys
 from SAT import SAT
+from SAT3 import SAT as SAT3
 import time
 
 if __name__ == "__main__":
@@ -26,15 +27,26 @@ if __name__ == "__main__":
     print("Enhanced walksat: ", result)
 
     if result[1]:
-        sat.write_solution(sol_filename)
-        display_sudoku_solution(sol_filename)
+        sat.write_solution("_" + sol_filename)
+        display_sudoku_solution("_" + sol_filename)
+
+    print(f"Enhanced Walksat", time.time() - t)
+    print("Enhanced walksat: ", result)
 
     t = time.time()
+    random.seed(1)
     result = sat.walksat()
     print("walksat: ", time.time() - t)
     print("walksat: ", result)
 
     t = time.time()
+    random.seed(1)
     result = sat.gsat()
     print("gsat: ", time.time() - t)
     print("gsat: ", result)
+
+    sat3 = SAT3(sys.argv[1])
+    result = sat3.dpll_backtracking()
+    if result[1]:
+        sat3.write_solution("_" + sol_filename)
+        display_sudoku_solution("_" + sol_filename)

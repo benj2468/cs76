@@ -11,7 +11,7 @@ from enum import Enum
 
 Model = Mapping[int, bool]
 
-GOLDEN_NUMBER = 0.9
+GOLDEN_NUMBER = 0.7
 MAXIMUM_ITERATIONS = 100000
 
 

@@ -6,12 +6,12 @@ from collections import defaultdict
 import random
 from typing import Generator, List, Mapping, Set
 import time
-from copy import copy
+from copy import copy, deepcopy
 from enum import Enum
 
 Model = Mapping[int, bool]
 
-GOLDEN_NUMBER = 0.9
+GOLDEN_NUMBER = 0.7
 MAXIMUM_ITERATIONS = 100000
 
 
@@ -43,6 +43,19 @@ class Variable():
 
     def __str__(self) -> str:
         return f"{'' if self.true else '-'}{self.var}"
+
+    def __neg__(self):
+        return Variable(not self.true, self.var)
+
+    def __eq__(self, o: object) -> bool:
+        return self.true == o.true and self.var == o.var
+
+    # self < o
+    def __lt__(self, o: object) -> bool:
+        if self.var == o.var == 0:
+            return not o.true
+        else:
+            return int(str(self)) < int(str(o))
 
 
 class Disjunction():
@@ -92,12 +105,14 @@ class CNF():
     '''
     def __init__(self, sentences: List[Disjunction]) -> None:
         self.sentences = sentences
-        self.variables_to_sentences: Mapping[int, Disjunction] = defaultdict(
-            lambda: [])
+        self.variables_to_sentences: Mapping[
+            int, List[Disjunction]] = defaultdict(lambda: [])
+        self.variables_to_sentences_all = defaultdict(lambda: set())
         self.constants = {}
         for sentence in sentences:
             for var in sentence.vars:
                 self.variables_to_sentences[var.var].append(sentence)
+                self.variables_to_sentences_all[str(var)].add(sentence)
             if len(sentence.vars) == 1:
                 var = sentence.vars[0]
                 self.constants[var.var] = var.true
@@ -180,6 +195,31 @@ class CNF():
         for sentence in self.sentences:
             if not sentence.is_satisfied(model):
                 yield sentence
+
+    ## Extra Credit
+    def unit_clause(self) -> Variable:
+        for sentence in self.sentences:
+            if len(sentence.vars) == 1:
+                return sentence.vars[0]
+
+    def remove_var(self, var: Variable):
+        for sentence in self.variables_to_sentences_all[str(-var)]:
+            if -var in sentence.vars:
+                sentence.vars.remove(-var)
+        for sentence in self.variables_to_sentences_all[str(var)]:
+            if sentence in self.sentences:
+                self.sentences.remove(sentence)
+
+        # del self.variables_to_sentences_all[str(var)]
+        # del self.variables_to_sentences_all[str(-var)]
+
+    def has_null_clause(self):
+        for sentence in self.sentences:
+            if len(sentence.vars) == 0:
+                return True
+
+    def add(self, disj: Disjunction):
+        return CNF([disj] + deepcopy(self.sentences))
 
 
 class SAT():
@@ -413,6 +453,66 @@ Variables: {len(self.variables)}
         times = sorted(times, key=lambda x: x[0])
 
         return times[0]
+
+    def dpll_backtracking(self):
+        print(len(self.cnf.sentences))
+        mem = set()
+        res = SAT.dpll(self.cnf, mem, [None] * len(self.variables))
+
+        print("Iterations: ", res[1])
+        print(res)
+        if res[0]:
+            model = [None] * len(self.variables)
+            for i, v in enumerate(res[0]):
+                model[i] = v
+            self.solution = model
+
+        return (None, True)
+
+    # Extra Credit
+    def dpll(cnf: CNF, mem, assignment):
+        assignment2 = copy(assignment)
+        if str(assignment) in mem:
+            return False, 1
+
+        count = 1
+        unit = cnf.unit_clause()
+        while unit:
+            assignment[unit.var] = unit.true
+            cnf.remove_var(unit)
+            unit = cnf.unit_clause()
+
+        if cnf.has_null_clause():
+            mem.add(str(assignment2))
+            return False, count
+        if len(cnf.sentences) == 0:
+            return assignment, count
+
+        ## We probably can pick a better one...
+
+        p = random.sample(cnf.sentences[0].vars, 1)[0]
+        # p = cnf.sentences[0].vars[0]
+        one = copy(assignment)
+        one[p.var] = p.true
+        one, count1 = SAT.dpll(cnf.add(Disjunction([p])), mem, one)
+        count += count1
+        if one:
+            return one, count
+        else:
+            mem.add(str(one))
+
+        two = copy(assignment)
+        two[p.var] = not p.true
+        two, count2 = SAT.dpll(cnf.add(Disjunction([-p])), mem, two)
+        count += count2
+        if two:
+            return two, count
+        else:
+            mem.add(str(two))
+
+        mem.add(str(assignment2))
+        mem.add(str(assignment))
+        return False, count
 
     def write_solution(self, file_name) -> None:
         with open(file_name, 'w') as file:
