@@ -4,182 +4,15 @@
 
 from collections import defaultdict
 import random
-from typing import Generator, List, Mapping, Set
+from CNF import Model, CNF, Disjunction, Variable
 import time
 from copy import copy
-from enum import Enum
 
-Model = Mapping[int, bool]
-
+# Golden Number
 GOLDEN_NUMBER = 0.7
+
+# Maximum iterations for WALK-SAT
 MAXIMUM_ITERATIONS = 100000
-
-
-class Satisfied(Enum):
-    Satisfied = True
-    UnSatisfied = False
-    Unknown = -1
-
-
-class Variable():
-    '''
-    Contains information regarding a variable within a CNF, and whether it is negated or not
-    '''
-    def __init__(self, true: bool, var: int) -> None:
-        self.true = true
-        self.var = var
-
-    def satisfied(self, model: Model) -> Satisfied:
-        '''
-        Given an model, is this variable true or not?
-        '''
-        try:
-            assign = model[self.var]
-        except:
-            assign = model.get(self.var)
-        if assign == None:
-            return Satisfied.Unknown
-        return Satisfied(assign) if self.true else Satisfied(not assign)
-
-    def __str__(self) -> str:
-        return f"{'' if self.true else '-'}{self.var}"
-
-
-class Disjunction():
-    '''
-    A Disjunction is a list of variables that are linked with or values
-    '''
-    def __init__(self, vars: List[Variable]) -> None:
-        self.vars = vars
-
-    def satisfied(self, model: Model) -> Satisfied:
-        '''
-        Checks whether the disjunction is true, given an model of all variables.
-
-        Since this is a disjunction, we can return True as soon as we find a variable that is true
-        '''
-        unknown = False
-        for var in self.vars:
-            if var.satisfied(model) == Satisfied.Satisfied:
-                return Satisfied.Satisfied
-            elif var.satisfied(model) == Satisfied.Unknown:
-                unknown = True
-        return Satisfied.Unknown if unknown else Satisfied.UnSatisfied
-
-    def is_satisfied(self, model: Model):
-        '''
-        Help determine if a disjunction is satisfied.
-        '''
-        return self.satisfied(model) == Satisfied.Satisfied
-
-    def find_constant(self, model: Model) -> Variable:
-        unknowns = []
-        for var in self.vars:
-            sat = var.satisfied(model)
-            if sat == Satisfied.Unknown:
-                unknowns.append(var)
-
-        if len(unknowns) == 1:
-            return unknowns[0]
-
-    def __str__(self) -> str:
-        return ",".join(map(str, self.vars))
-
-
-class CNF():
-    '''
-    A CNF is a conjunction of disjunctions, so the list here is joined by a series of AND operators
-    '''
-    def __init__(self, sentences: List[Disjunction]) -> None:
-        self.sentences = sentences
-        self.variables_to_sentences: Mapping[int, Disjunction] = defaultdict(
-            lambda: [])
-        self.constants = {}
-        for sentence in sentences:
-            for var in sentence.vars:
-                self.variables_to_sentences[var.var].append(sentence)
-            if len(sentence.vars) == 1:
-                var = sentence.vars[0]
-                self.constants[var.var] = var.true
-
-        while True:
-            found_constant = False
-            for var in list(self.constants):
-                for sentence in self.variables_to_sentences[var]:
-                    constant = sentence.find_constant(self.constants)
-                    if constant:
-                        self.constants[constant.var] = constant.true
-                        found_constant = True
-            if not found_constant:
-                break
-
-    def satisfied(self, model: Model) -> Satisfied:
-        '''
-        In order for a CNF to be satisfied ALL sentences must be true under an model. 
-        Therefore, the only can return quickly if we find a sentence that is NOT satisfied.
-        This is a FAST way of checking if we are not satisfied. We want this to make sure that we can check fast in the loop.
-        '''
-        unknown = False
-        for sentence in self.sentences:
-            res = sentence.satisfied(model)
-            if res == Satisfied.UnSatisfied:
-                return Satisfied.UnSatisfied
-            elif res == Satisfied.Unknown:
-                unknown = True
-        return Satisfied.Unknown if unknown else Satisfied.Satisfied
-
-    def is_satisfied(self, model: Model) -> Satisfied:
-        '''
-        Help determine if a cnf is satisfied.
-        '''
-        return self.satisfied(model) == Satisfied.Satisfied
-
-    def count_satisfied(self, model: Model) -> int:
-        """
-        This is a more costly check - checks the count of satisfied sentences given the model
-        """
-        count = 0
-        for sentence in self.sentences:
-            if sentence.is_satisfied(model):
-                count += 1
-        return count
-
-    def get_satisfied(self, model: Model) -> Set[Disjunction]:
-        '''
-        Get all the satisfied sentences
-        '''
-        satisfied = set()
-        for sentence in self.sentences:
-            if sentence.is_satisfied(model):
-                satisfied.add(sentence)
-        return satisfied
-
-    def count_satisfied_diff(self, satisfied, model: Model, var) -> int:
-        '''
-        Count the difference between sentences satisfied in the model, and the sentences satisfied in the model with var switched.
-
-        This is made efficient by keeping a map from variables to the sentences that include them, 
-        so we only need to check some sentences, not all of them. 
-        '''
-        diff = 0
-
-        for sentence in self.variables_to_sentences[var]:
-            new_model = copy(model)
-            new_model[var] = not model[var]
-            now_satisfied = sentence.is_satisfied(new_model)
-            if not sentence in satisfied and now_satisfied:
-                diff += 1
-            elif sentence in satisfied and not now_satisfied:
-                diff -= 1
-        return diff
-
-    def unsatisfied_clauses(self, model: Model) -> Generator:
-        '''
-        Extract all the unsatisfied clauses from the cnf and the model
-        '''
-        for sentence in self.sentences:
-            if not sentence.is_satisfied(model):
-                yield sentence
 
 
 class SAT():
@@ -242,7 +75,7 @@ Variables: {len(self.variables)}
             model[var] = False if random.randint(0, 1) == 0 else True
 
         i = 0
-        while not self.cnf.is_satisfied(model) and i < MAXIMUM_ITERATIONS:
+        while not self.cnf.is_satisfied(model) and i < 3000:
             # Find a random one to flip if we pass
             if random.random() >= GOLDEN_NUMBER:
                 rand_var = random.sample(list(model), 1)[0]
@@ -317,12 +150,17 @@ Variables: {len(self.variables)}
         model: Model = [False] * len(self.variables)
         checked_models = shared_visited
         for var in self.variables:
+            # Set all of our constants to their constant values
             if var in self.cnf.constants:
                 model[var] = self.cnf.constants[var]
             else:
                 model[var] = False if random.randint(0, 1) == 0 else True
 
         def update_model(l):
+            '''
+            Helper for updating the model, tried to find one that we haven't already tried 
+            so that we don't check satisfied (a slow process) multiple times
+            '''
             i = 0
             l = copy(l)
             random.shuffle(l)
@@ -334,16 +172,15 @@ Variables: {len(self.variables)}
                 rand_var = l[i]
                 if not rand_var in self.cnf.constants:
                     model[rand_var] = not model[rand_var]
-
                     flipped = True
                 else:
                     flipped = False
                 i += 1
-
                 if i == len(l):
-                    # print('checked all variables...')
+                    # If we've checked all the possible values, then return false, we've tried all of these before...
+                    # We will default to picking a random one if this doesn't work
+                    # This helps stay out of the local minimums
                     return False
-
             return True
 
         i = 0
@@ -364,12 +201,14 @@ Variables: {len(self.variables)}
                 for var in map(lambda x: x.var, unsatisfied_clause.vars):
                     if var in self.cnf.constants:
                         continue
+                    # Use the unsatisfied diff helper to speed up calcs
                     count = len(satisfied) + self.cnf.count_satisfied_diff(
                         satisfied, model, var)
                     if m <= count:
                         scores[count].append(var)
                         m = count
 
+                # Print a running count of the iterations we've made
                 print(i, end="\r")
 
                 if status != None:
@@ -393,6 +232,7 @@ Variables: {len(self.variables)}
         shared_visited = set()
         attempts = 10
         for golden_number in range(1, attempts):
+            # Spawn a thread for each golden number
             t = threading.Thread(target=self.walksat_enhanced,
                                  args=(
                                      golden_number / attempts,
@@ -404,12 +244,15 @@ Variables: {len(self.variables)}
 
             t.start()
 
+        # Wait until one of the threads has completed
         while not len(times):
-            time.sleep(0.0001)
+            pass
 
+        # Wait a second, because it might have taken some time to start the last one and it might finish before the first one
         time.sleep(0.1)
 
         times = list(times.items())
+        # Sort them and output the smallest
         times = sorted(times, key=lambda x: x[0])
 
         return times[0]

@@ -5,12 +5,10 @@
 from display import display_sudoku_solution
 import random, sys
 from SAT import SAT
-from SAT3 import SAT as SAT3
+from SAT_BONUS import SAT as SAT3
 import time
 
 if __name__ == "__main__":
-    # for testing, always initialize the pseudorandom number generator to output the same sequence
-    #  of values:
     random.seed(1)
 
     puzzle_name = str(sys.argv[1][:-4])
@@ -27,11 +25,8 @@ if __name__ == "__main__":
     print("Enhanced walksat: ", result)
 
     if result[1]:
-        sat.write_solution("_" + sol_filename)
-        display_sudoku_solution("_" + sol_filename)
-
-    print(f"Enhanced Walksat", time.time() - t)
-    print("Enhanced walksat: ", result)
+        sat.write_solution(sol_filename)
+        display_sudoku_solution(sol_filename)
 
     t = time.time()
     random.seed(1)

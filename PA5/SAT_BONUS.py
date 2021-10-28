@@ -50,6 +50,9 @@ class Variable():
     def __eq__(self, o: object) -> bool:
         return self.true == o.true and self.var == o.var
 
+    def __hash__(self) -> int:
+        return hash(str(self))
+
     # self < o
     def __lt__(self, o: object) -> bool:
         if self.var == o.var == 0:
@@ -202,6 +205,17 @@ class CNF():
             if len(sentence.vars) == 1:
                 return sentence.vars[0]
 
+    def find_pure(self) -> Variable:
+        for v in list(self.variables_to_sentences):
+            print(v)
+            tr = len(self.variables_to_sentences_all[str(Variable(True, v))])
+            fa = len(self.variables_to_sentences_all[str(Variable(False, v))])
+
+            if tr == 0 and fa > 0:
+                return Variable(False, v)
+            elif tr > 0 and fa == 0:
+                return Variable(True, v)
+
     def remove_var(self, var: Variable):
         for sentence in self.variables_to_sentences_all[str(-var)]:
             if -var in sentence.vars:
@@ -209,9 +223,14 @@ class CNF():
         for sentence in self.variables_to_sentences_all[str(var)]:
             if sentence in self.sentences:
                 self.sentences.remove(sentence)
+                for v in sentence.vars:
+                    if v != var:
+                        self.variables_to_sentences_all[str(v)]
+                        self.variables_to_sentences_all[str(v)].remove(
+                            sentence)
 
-        # del self.variables_to_sentences_all[str(var)]
-        # del self.variables_to_sentences_all[str(-var)]
+        del self.variables_to_sentences_all[str(var)]
+        del self.variables_to_sentences_all[str(-var)]
 
     def has_null_clause(self):
         for sentence in self.sentences:
@@ -457,10 +476,9 @@ Variables: {len(self.variables)}
     def dpll_backtracking(self):
         print(len(self.cnf.sentences))
         mem = set()
-        res = SAT.dpll(self.cnf, mem, [None] * len(self.variables))
+        res = SAT.dpll(self.cnf, mem, [None] * len(self.variables), 0)
 
         print("Iterations: ", res[1])
-        print(res)
         if res[0]:
             model = [None] * len(self.variables)
             for i, v in enumerate(res[0]):
@@ -470,7 +488,7 @@ Variables: {len(self.variables)}
         return (None, True)
 
     # Extra Credit
-    def dpll(cnf: CNF, mem, assignment):
+    def dpll(cnf: CNF, mem, assignment, depth):
         assignment2 = copy(assignment)
         if str(assignment) in mem:
             return False, 1
@@ -483,32 +501,37 @@ Variables: {len(self.variables)}
             unit = cnf.unit_clause()
 
         if cnf.has_null_clause():
+            mem.add(str(assignment))
             mem.add(str(assignment2))
             return False, count
         if len(cnf.sentences) == 0:
             return assignment, count
 
-        ## We probably can pick a better one...
-
-        p = random.sample(cnf.sentences[0].vars, 1)[0]
-        # p = cnf.sentences[0].vars[0]
-        one = copy(assignment)
-        one[p.var] = p.true
-        one, count1 = SAT.dpll(cnf.add(Disjunction([p])), mem, one)
-        count += count1
-        if one:
-            return one, count
+        print('looking....')
+        p = cnf.find_pure()
+        if not p:
+            print('nothing found')
+            p = random.sample(random.sample(cnf.sentences, 1)[0].vars, 1)[0]
         else:
-            mem.add(str(one))
+            print(p)
 
         two = copy(assignment)
         two[p.var] = not p.true
-        two, count2 = SAT.dpll(cnf.add(Disjunction([-p])), mem, two)
+        two, count2 = SAT.dpll(cnf.add(Disjunction([-p])), mem, two, depth + 1)
         count += count2
         if two:
             return two, count
         else:
             mem.add(str(two))
+
+        one = copy(assignment)
+        one[p.var] = p.true
+        one, count1 = SAT.dpll(cnf.add(Disjunction([p])), mem, one, depth + 1)
+        count += count1
+        if one:
+            return one, count
+        else:
+            mem.add(str(one))
 
         mem.add(str(assignment2))
         mem.add(str(assignment))
