@@ -207,7 +207,6 @@ class CNF():
 
     def find_pure(self) -> Variable:
         for v in list(self.variables_to_sentences):
-            print(v)
             tr = len(self.variables_to_sentences_all[str(Variable(True, v))])
             fa = len(self.variables_to_sentences_all[str(Variable(False, v))])
 
@@ -507,13 +506,9 @@ Variables: {len(self.variables)}
         if len(cnf.sentences) == 0:
             return assignment, count
 
-        print('looking....')
         p = cnf.find_pure()
         if not p:
-            print('nothing found')
             p = random.sample(random.sample(cnf.sentences, 1)[0].vars, 1)[0]
-        else:
-            print(p)
 
         two = copy(assignment)
         two[p.var] = not p.true
@@ -542,3 +537,7 @@ Variables: {len(self.variables)}
             for k in range(len(list(self.solution))):
                 v = self.solution[k]
                 file.write(f"{'-' if not v else ''}{self.variables[k]}\n")
+
+    def delete_solution(self, file_name) -> None:
+        import os
+        os.remove(file_name)

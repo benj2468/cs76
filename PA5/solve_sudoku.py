@@ -43,5 +43,7 @@ if __name__ == "__main__":
     sat3 = SAT3(sys.argv[1])
     result = sat3.dpll_backtracking()
     if result[1]:
+
         sat3.write_solution("_" + sol_filename)
         display_sudoku_solution("_" + sol_filename)
+        sat3.delete_solution("_" + sol_filename)
