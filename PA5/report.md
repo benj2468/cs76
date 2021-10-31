@@ -141,6 +141,29 @@ Enhanced walksat:  (4518, True)
 ```
 SAT Stats:
 -------
+Name: puzzle1.cnf
+Threshold: 0.7
+Sentences: 3250
+Constants: 90
+Variables: 729
+-------
+
+Enhanced Walksat 286.7374448776245
+Enhanced walksat:  (37497, True)
+5 1 8 | 7 4 6 | 9 2 3
+2 7 6 | 3 9 5 | 8 4 1
+9 4 3 | 2 8 1 | 5 6 7
+---------------------
+8 2 5 | 1 6 4 | 7 3 9
+1 6 9 | 8 7 3 | 4 5 2
+7 3 4 | 5 2 9 | 6 1 8
+---------------------
+6 5 1 | 9 3 7 | 2 8 4
+4 9 2 | 6 1 8 | 3 7 5
+3 8 7 | 4 5 2 | 1 9 6
+
+SAT Stats:
+-------
 Name: puzzle2.cnf
 Threshold: 0.7
 Sentences: 3251
