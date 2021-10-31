@@ -162,16 +162,16 @@ Variables: {len(self.variables)}
             so that we don't check satisfied (a slow process) multiple times
             '''
             i = 0
+            if len(l) == 0:
+                return False
             l = copy(l)
             random.shuffle(l)
             flipped = False
-            while str(model) in checked_models and len(
-                    checked_models) < 2**len(self.variables):
+            while str(model) in checked_models:
                 if flipped:
                     model[l[i - 1]] = not model[l[i - 1]]
-                rand_var = l[i]
-                if not rand_var in self.cnf.constants:
-                    model[rand_var] = not model[rand_var]
+                if not l[i] in self.cnf.constants:
+                    model[l[i]] = not model[l[i]]
                     flipped = True
                 else:
                     flipped = False
@@ -181,13 +181,13 @@ Variables: {len(self.variables)}
                     # We will default to picking a random one if this doesn't work
                     # This helps stay out of the local minimums
                     return False
+
             return True
 
         i = 0
-        while str(model) in checked_models or not self.cnf.is_satisfied(
-                model) and len(checked_models) < 2**len(
-                    self.variables) and i < MAXIMUM_ITERATIONS:
-
+        while (str(model) in checked_models or not self.cnf.is_satisfied(model)
+               ) and len(checked_models) < 2**(len(self.variables) - len(
+                   self.cnf.constants)) and i < MAXIMUM_ITERATIONS:
             i += 1
             if str(model) in checked_models or random.random() > golden_number:
                 update_model(list(self.variables))
