@@ -19,6 +19,6 @@ for i in range(0, len(params_in), 2):
 
 maze = Maze.random(params[WIDTH], params[HEIGHT], params[OBSTACLES],
                    list(map(Color, range(0, 4))))
-readings = (Color(randint(0, 4)) for _ in range(LENGTH))
+readings = (Color(randint(0, 3)) for _ in range(params[LENGTH]))
 
 Problem(maze).run(readings)

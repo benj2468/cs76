@@ -30,6 +30,9 @@ class Maze(Board):
                 expectations[tuple(Location(i, j))] = expectation
         return State(expectations)
 
+    def is_valid_location(self, loc: Location) -> bool:
+        return super().is_valid_location(loc) and not tuple(loc) in self.walls
+
     def print(self, state: State):
         lines = []
         for i in range(self.width):
@@ -42,7 +45,7 @@ class Maze(Board):
                         Location(i, j))]) + str(state.expectations[tuple(
                             Location(i, j))].__round__(3)) + '\t\t'
             lines.append(line)
-        header = '\t'.join(map(str, list(range(0, self.width))))
+        header = '\t\t'.join(map(str, list(range(0, self.width))))
         lines.append(f"\t{header}")
         lines.reverse()
 
