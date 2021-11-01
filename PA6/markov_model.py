@@ -70,14 +70,15 @@ class State:
 
     def transition(prev, board: Board, reading: Any,
                    sensor_model: FunctionType) -> State:
-        next = State(defaultdict(lambda: 0), reading)
+        next = State({}, reading)
         for loc in prev.expectations:
-            neighbors = list(
-                filter(board.is_valid_location,
-                       Location(*loc).neighbors()))
-            for neighbor in neighbors:
-                next.expectations[tuple(neighbor)] += (prev.expectations[loc] /
-                                                       len(neighbors))
+            transition = 0
+            for neighbor in Location(*loc).neighbors():
+                if board.is_valid_location(neighbor):
+                    transition += 0.25 * prev.expectations[tuple(neighbor)]
+                else:
+                    transition += 0.25 * prev.expectations[tuple(loc)]
+            next.expectations[loc] = transition
         for loc in next.expectations:
             next.expectations[loc] *= sensor_model(reading,
                                                    board.location_data[loc])
