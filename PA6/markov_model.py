@@ -17,12 +17,11 @@ class Location:
         self.x = x
         self.y = y
 
-    def __iter__(self):
-        yield self.x
-        yield self.y
-
     def __eq__(self, o: object) -> bool:
         return self.x == o.x and self.y == o.y
+
+    def __hash__(self) -> int:
+        return (self.x, self.y).__hash__()
 
     def neighbors(self) -> Iterator[Location]:
         '''
@@ -49,7 +48,7 @@ class Board(object):
         return 0 <= loc.x < self.width and 0 <= loc.y < self.height
 
 
-Expectation = Mapping[Tuple[int, int], float]
+Expectation = Mapping[Location, float]
 
 
 class State:
@@ -73,11 +72,11 @@ class State:
         next = State({}, reading)
         for loc in prev.expectations:
             transition = 0
-            for neighbor in Location(*loc).neighbors():
+            for neighbor in loc.neighbors():
                 if board.is_valid_location(neighbor):
-                    transition += 0.25 * prev.expectations[tuple(neighbor)]
+                    transition += 0.25 * prev.expectations[neighbor]
                 else:
-                    transition += 0.25 * prev.expectations[tuple(loc)]
+                    transition += 0.25 * prev.expectations[loc]
             next.expectations[loc] = transition
         for loc in next.expectations:
             next.expectations[loc] *= sensor_model(reading,
