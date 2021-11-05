@@ -33,17 +33,20 @@ class Maze(Board):
     def is_valid_location(self, loc: Location) -> bool:
         return super().is_valid_location(loc) and not loc in self.walls
 
-    def print(self, state: State):
+    def print(self, state: State, expected_loc: Location = None):
         lines = []
         for i in range(self.width):
             line = f'{i}:\t'
             for j in range(self.height):
-                if Location(i, j) in self.walls:
+                loc = Location(i, j)
+
+                if loc in self.walls:
                     line += "#\t\t"
                 else:
-                    line += str(self.location_data[Location(i, j)]) + str(
-                        state.expectations[Location(i,
-                                                    j)].__round__(3)) + '\t\t'
+                    if expected_loc and expected_loc == loc:
+                        line += '⭐'
+                    line += str(self.location_data[loc]) + str(
+                        state.expectations[loc].__round__(3)) + '\t\t'
             lines.append(line)
         header = '\t\t'.join(map(str, list(range(0, self.width))))
         lines.append(f"\t{header}")

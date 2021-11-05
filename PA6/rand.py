@@ -21,4 +21,6 @@ maze = Maze.random(params[WIDTH], params[HEIGHT], params[OBSTACLES],
                    list(map(Color, range(0, 4))))
 readings = (Color(randint(0, 3)) for _ in range(params[LENGTH]))
 
-Problem(maze).run(readings)
+prob = Problem(maze)
+
+prob.viterbi(readings)

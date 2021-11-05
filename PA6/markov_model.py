@@ -23,6 +23,9 @@ class Location:
     def __hash__(self) -> int:
         return (self.x, self.y).__hash__()
 
+    def __str__(self) -> str:
+        return f"({self.x}, {self.y})"
+
     def neighbors(self) -> Iterator[Location]:
         '''
         Find all the neighbors of a location

@@ -5,8 +5,10 @@
 
 from __future__ import annotations
 from enum import Enum
-from typing import Iterable
+from typing import Iterable, List, Optional, Tuple
+from markov_model import Location, State
 from maze import Maze
+from functools import reduce
 
 
 class Color(Enum):
@@ -39,3 +41,39 @@ class Problem:
         for reading in readings:
             state = state.transition(self.maze, reading, Color.sense)
             self.maze.print(state)
+
+    def viterbi(self, readings: Iterable[Color]):
+        state = Maze.initial_state(self.maze)
+        self.maze.print(state)
+
+        states: List[State] = []
+        for reading in readings:
+            state = state.transition(self.maze, reading, Color.sense)
+            states.append(state)
+
+        ## Build best path from best final state recursively back from that state
+
+        i = len(states) - 1
+        end = states[i]
+        end_location: Tuple[int, Location] = (0, None)
+        for loc, exp in end.expectations.items():
+            if end_location[0] < exp:
+                end_location = (exp, loc)
+        end_loc = end_location[1]
+
+        path = [end_loc]
+        while i > 0:
+            i -= 1
+            state = states[i]
+            prev: Tuple[int, Location] = (0, None)
+            for neighbor in filter(self.maze.is_valid_location,
+                                   path[-1].neighbors()):
+
+                if state.expectations[neighbor] > prev[0]:
+                    prev = (state.expectations[neighbor], neighbor)
+            path.append(prev[1])
+
+        path.reverse()
+
+        for i, loc in enumerate(path):
+            self.maze.print(states[i], loc)
