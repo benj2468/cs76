@@ -82,3 +82,54 @@ The sensor model is multiplying the retrieved probability from summing the neigh
 3. How do you implement the filtering algorithm, given that there are several possible values for the state variable (the state variable is not boolean).
 
 The filtering algorithm is simply keeping track of the previous state, and rather than re-computing everything on each transition, using the previous state to calculate the new state. That is described above, but simply put we create a new board, fill in initial probabilities given the transition model, and then update those probabilities with the sensor model.
+
+# Extra Credit
+
+I implemented a viterbi algorithm that backtracks from the final state to find the best path.
+
+This is visible with the following output from a random generated path and map. The `⭐` indicates where the robot thinks it is.
+
+```
+-------- State (Read: None) ---------
+        0               1               2               3               4
+4:      🔴0.05          🔵0.05          🔵0.05          🟢0.05          🟡0.05
+3:      #               #               #               🔵0.05          🔴0.05
+2:      #               🔴0.05          🟡0.05          🔴0.05          🔴0.05
+1:      🟡0.05          🟡0.05          🟢0.05          🔵0.05          #
+0:      🔴0.05          🟡0.05          🟡0.05          🔴0.05          🔵0.05
+-------- State (Read: 🟢) ---------
+        0               1               2               3               4
+4:      🔴0.014         🔵0.014         🔵0.014         ⭐🟢0.314        🟡0.014
+3:      #               #               #               🔵0.014         🔴0.014
+2:      #               🔴0.014         🟡0.014         🔴0.014         🔴0.014
+1:      🟡0.014         🟡0.014         🟢0.314         🔵0.014         #
+0:      🔴0.014         🟡0.014         🟡0.014         🔴0.014         🔵0.014
+-------- State (Read: 🟢) ---------
+        0               1               2               3               4
+4:      🔴0.003         🔵0.003         🔵0.02          🟢0.438         🟡0.02
+3:      #               #               #               ⭐🔵0.02        🔴0.003
+2:      #               🔴0.003         🟡0.02          🔴0.003         🔴0.003
+1:      🟡0.003         🟡0.02          🟢0.07          🔵0.02          #
+0:      🔴0.003         🟡0.003         🟡0.02          🔴0.003         🔵0.003
+-------- State (Read: 🔴) ---------
+        0               1               2               3               4
+4:      🔴0.026         🔵0.003         🔵0.045         🟢0.046         🟡0.045
+3:      #               #               #               🔵0.043         🔴0.095
+2:      #               🔴0.095         🟡0.009         ⭐🔴0.129       🔴0.026
+1:      🟡0.003         🟡0.007         🟢0.007         🔵0.009         #
+0:      🔴0.026         🟡0.004         🟡0.009         🔴0.095         🔵0.001
+-------- State (Read: 🟡) ---------
+        0               1               2               3               4
+4:      🔴0.003         🔵0.003         🔵0.006         🟢0.007         🟡0.209
+3:      #               #               #               🔵0.013         🔴0.009
+2:      #               🔴0.008         ⭐🟡0.217       🔴0.004         🔴0.011
+1:      🟡0.035         🟡0.099         🟢0.001         🔵0.01          #
+0:      🔴0.002         🟡0.042         🟡0.105         🔴0.005         🔵0.004
+-------- State (Read: 🟢) ---------
+        0               1               2               3               4
+4:      🔴0.001         🔵0.001         🔵0.001         🟢0.277         🟡0.023
+3:      #               #               #              🔵0.002         🔴0.013
+2:      #               🔴0.018         🟡0.012         🔴0.013         🔴0.002
+1:      🟡0.009         🟡0.005         ⭐🟢0.507       🔵0.001         #
+0:      🔴0.004         🟡0.013         🟡0.008         🔴0.007         🔵0.001
+```

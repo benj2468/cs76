@@ -74,11 +74,6 @@ class MarkovModelTest(unittest.TestCase):
         self.assertEqual(new.expectations[Location(1, 1)], 0.05)
 
         new = new.transition(b, False, sensor_model)
-        print(new.expectations)
-        # self.assertEqual(new.expectations[Location(0, 0)], 0.05)
-        # self.assertEqual(new.expectations[Location(0, 1)], 0.05)
-        # self.assertEqual(new.expectations[Location(1, 0)], 0.45)
-        # self.assertEqual(new.expectations[Location(1, 1)], 0.45)
 
 
 class MazeTest(unittest.TestCase):

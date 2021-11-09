@@ -5,19 +5,24 @@
 
 from __future__ import annotations
 from enum import Enum
-from typing import Iterable, List, Optional, Tuple
+from typing import Iterable, List, Tuple
 from markov_model import Location, State
 from maze import Maze
-from functools import reduce
 
 
 class Color(Enum):
+    '''
+    Color of each square
+    '''
     Red = 0
     Green = 1
     Yellow = 2
     Blue = 3
 
     def sense(reading: Color, true_color: Color):
+        '''
+        Used to define the sensor model.
+        '''
         return 0.88 if reading.value == true_color.value else 0.04
 
     def __str__(self) -> str:
@@ -32,22 +37,33 @@ class Color(Enum):
 
 
 class Problem:
+    '''
+    Run a maze hidden markov model with different options
+    '''
     def __init__(self, maze: Maze) -> None:
         self.maze = maze
 
     def run(self, readings: Iterable[Color]):
         state = Maze.initial_state(self.maze)
         self.maze.print(state)
+
+        # Loop over all readings
         for reading in readings:
+
+            # use the State transition, passing in the corrent maze, the reading, and the sensor model
             state = state.transition(self.maze, reading, Color.sense)
             self.maze.print(state)
 
     def viterbi(self, readings: Iterable[Color]):
+        '''
+        In addition to finding most likely end-state, also find potential path
+        '''
         state = Maze.initial_state(self.maze)
         self.maze.print(state)
 
         states: List[State] = []
         for reading in readings:
+            # use the State transition, passing in the corrent maze, the reading, and the sensor model
             state = state.transition(self.maze, reading, Color.sense)
             states.append(state)
 

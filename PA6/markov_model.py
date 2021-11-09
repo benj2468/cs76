@@ -4,9 +4,8 @@
 # 11.1.21
 
 from __future__ import annotations
-from collections import defaultdict
 from types import FunctionType
-from typing import Any, Iterator, Mapping, Set, Tuple
+from typing import Any, Iterator, Mapping
 
 
 class Location:
@@ -55,8 +54,15 @@ Expectation = Mapping[Location, float]
 
 
 class State:
+    '''
+    A state describes a current probability distribution over locations on a board
+
+    Think of expectations as a matrix
+    '''
     def __init__(self, expectations: Expectation, reading: Any = None) -> None:
         self.expectations = expectations
+
+        # Save the reading to be able to reference in print etc. This is not necessary but helpful
         self.reading = reading
 
     def __iter__(self):
@@ -64,6 +70,9 @@ class State:
             yield loc
 
     def normalize(self):
+        '''
+        Normalize the expeected values in the matrix
+        '''
         tot = 0
         for loc in self:
             tot += self.expectations[loc]
@@ -72,17 +81,30 @@ class State:
 
     def transition(prev, board: Board, reading: Any,
                    sensor_model: FunctionType) -> State:
+        '''
+        Transition from current state (self/prev) to a new state, given a reading and sensor_model which define the sensor_model
+
+        Transition model is defined by moving 1 space N/E/S/W or staying still if bordering a wall/boundary
+        '''
         next = State({}, reading)
+        # Loop over each location
         for loc in prev.expectations:
             transition = 0
+
+            # Sum together the transition models
             for neighbor in loc.neighbors():
                 if board.is_valid_location(neighbor):
                     transition += 0.25 * prev.expectations[neighbor]
                 else:
                     transition += 0.25 * prev.expectations[loc]
             next.expectations[loc] = transition
+
         for loc in next.expectations:
+            # Multiply by the sensor model
             next.expectations[loc] *= sensor_model(reading,
                                                    board.location_data[loc])
+
+        # Normalize the matrix
         next.normalize()
+
         return next

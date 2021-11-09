@@ -6,11 +6,15 @@
 from __future__ import annotations
 from typing import Any, Mapping, Set, Tuple
 from random import sample
+from collections import defaultdict
 
 from markov_model import *
 
 
 class Maze(Board):
+    '''
+    Maze is a sub-class of a board
+    '''
     def __init__(self, size: Tuple[int, int], walls: Set[Location],
                  data: Mapping[Location, Any]) -> None:
 
@@ -19,6 +23,9 @@ class Maze(Board):
         super().__init__(size[0], size[1], data)
 
     def initial_state(maze: Maze) -> State:
+        '''
+        Initial state contains equal expectation at all locations
+        '''
         open_locations = (maze.width * maze.height) - len(maze.walls)
         expectations = defaultdict(None)
         for i in range(maze.width):
@@ -31,6 +38,9 @@ class Maze(Board):
         return State(expectations)
 
     def is_valid_location(self, loc: Location) -> bool:
+        '''
+        Extend board functionality to take into consideration walls
+        '''
         return super().is_valid_location(loc) and not loc in self.walls
 
     def print(self, state: State, expected_loc: Location = None):
