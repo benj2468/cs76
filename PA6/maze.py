@@ -55,8 +55,9 @@ class Maze(Board):
                 else:
                     if expected_loc and expected_loc == loc:
                         line += '⭐'
-                    line += str(self.location_data[loc]) + str(
-                        state.expectations[loc].__round__(3)) + '\t\t'
+                    else:
+                        line += str(self.location_data[loc])
+                    line += str(state.expectations[loc].__round__(3)) + '\t\t'
             lines.append(line)
         header = '\t\t'.join(map(str, list(range(0, self.width))))
         lines.append(f"\t{header}")

@@ -27,13 +27,13 @@ class Color(Enum):
 
     def __str__(self) -> str:
         if self == Color.Red:
-            return '🔴'
+            return 'R'
         elif self == Color.Green:
-            return '🟢'
+            return 'G'
         elif self == Color.Yellow:
-            return '🟡'
+            return 'Y'
         else:
-            return '🔵'
+            return 'B'
 
 
 class Problem:
