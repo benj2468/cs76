@@ -42,19 +42,20 @@ def value_iteration_pre(nodes: List[Node], discount: float, iters: int):
 
 
 def value_iteration_post(nodes: List[Node], discount: float, iters: int):
-    table = [[0] * len(nodes)]
+    table = [[(0, None)] * len(nodes)]
     for i in range(iters):
         prev = table[-1]
         new = []
         for node in nodes:
-            m = float('-inf')
+            m = (float('-inf'), None)
             for a in node.actions:
                 s = 0
                 for prob_action in node.actions[a]:
                     v_prev = prev[nodes.index(prob_action.dest)]
                     s += prob_action.prob * (prob_action.dest.reward +
-                                             discount * v_prev)
-                m = max(m, s)
+                                             discount * v_prev[0])
+                if s > m[0]:
+                    m = (s, a)
             new.append(m)
         table.append(new)
     return table
@@ -94,9 +95,9 @@ Caught.add_action(0, Action(.7, Danger))
 Caught.add_action(1, Action(.3, Ok))
 Caught.add_action(1, Action(.7, Caught))
 
-print(value_iteration_post([Ok, Danger, Caught], 0.9, 2))
-print(value_iteration_pre([Ok, Danger, Caught], 0.9, 2))
+for i in range(100):
+    print(value_iteration_post([Ok, Danger, Caught], 0.9, i)[-1])
 
-print(
-    q_learning(0.5, 1, [('x', 'r', 'y', 2), ('z', 'l', 'y', 2),
-                        ('y', 'r', 'z', -2), ('x', 'r', 'y', 4)]))
+# print(
+#     q_learning(0.5, 1, [('x', 'r', 'y', 2), ('z', 'l', 'y', 2),
+#                         ('y', 'r', 'z', -2), ('x', 'r', 'y', 4)]))
